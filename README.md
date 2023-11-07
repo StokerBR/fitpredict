@@ -12,6 +12,8 @@ FitPredict é um aplicativo de condicionamento físico que permite aos usuários
 
 *Para personalizar o meu perfil do gêmeo digital e acompanhar meu progresso de condicionamento físico.*
 
+---
+
 #### Caso de Uso: FC01a - Inserir Dados Pessoais
 
 **Cenário: FC01a-C01 - Inserir Dados Pessoais com Sucesso**
@@ -28,6 +30,7 @@ Então os dados são salvos no meu perfil do gêmeo digital
 
 E o FitPredict calcula metas com base nos dados inseridos
 
+---
 
 **Cenário: FC01a-C02 - Inserir Dados Pessoais Inválidos**
 
@@ -42,6 +45,8 @@ E aciono o botão de confirmação
 Então o FitPredict exibe mensagens de erro apropriadas
 
 E os dados não são salvos no meu perfil do gêmeo digital
+
+---
 
 #### Caso de Uso: FC01b - Editar Dados Pessoais
 
@@ -59,6 +64,8 @@ Então os dados são atualizados no meu perfil do gêmeo digital
 
 E o FitPredict recalcula as metas com base nos dados atualizados
 
+---
+
 #### Caso de Uso: FC01c - Inserir e Editar Metas
 
 **Cenário: FC01c-C01 - Inserir Metas com Sucesso**
@@ -73,6 +80,8 @@ E aciono o botão de confirmação
 
 Então as metas são salvas no meu perfil do gêmeo digital
 
+---
+
 
 **Cenário: FC01c-C02 - Editar Metas com Sucesso**
 
@@ -86,6 +95,8 @@ E aciono o botão de confirmação
 
 Então as metas são atualizadas no meu perfil do gêmeo digital
 
+---
+
 ### Funcionalidade: FC02 - Acompanhamento de Progresso
 
 *Como usuário do FitPredict*
@@ -93,6 +104,8 @@ Então as metas são atualizadas no meu perfil do gêmeo digital
 *Eu quero acompanhar meu progresso em relação às metas estabelecidas*
 
 *Para manter o foco e motivação em minha jornada de condicionamento físico.*
+
+---
 
 #### Caso de Uso: FC02a - Exibir Progresso
 
@@ -108,6 +121,8 @@ Então o FitPredict exibe o meu progresso atual em relação às metas estabelec
 
 E apresenta informações sobre passos andados, distância percorrida e calorias queimadas
 
+---
+
 
 **Cenário: FC02a-C02 - Alcançar Metas**
 
@@ -119,6 +134,7 @@ Quando atinjo as metas definidas de distância, passos e calorias
 
 Então o FitPredict parabeniza e destaca o sucesso do usuário
 
+---
 
 **Cenário: FC02a-C03 - Não Alcançar Metas**
 
