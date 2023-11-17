@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  M
+  F
+}
+
+model User {
+  id          Int      @default(autoincrement()) @id
+  name        String  
+  email       String   @unique
+  password    String
+  gender      Gender
+  height      Float
+  weight      Float
+  totalSteps  Int
+  lastSync    DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+
+  goals       Goal[]
+  stats       Stat[]
+  
+  @@map("users")
+}
+
+model Goal {
+  id          Int      @default(autoincrement()) @id
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  distance    Int // Metros
+  steps       Int
+  calories    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  
+  @@map("goals")
+}
+
+model Stat {
+  id          Int      @default(autoincrement()) @id
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  distance    Int // Metros
+  steps       Int
+  calories    Int
+  createdAt   DateTime @default(now())
+  
+  @@map("stats")
+}
