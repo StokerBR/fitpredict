@@ -1,7 +1,16 @@
+import 'package:fitpredict/global_variables.dart';
+import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/pages/home_page.dart';
+import 'package:fitpredict/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Hive.initFlutter();
+  Hive.openBox<User>('userBox');
+
   runApp(const App());
 }
 
@@ -13,15 +22,8 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'FitPredict',
       home: const HomePage(),
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-          },
-        ),
-      ),
+      theme: AppTheme.themeData,
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
     );
   }

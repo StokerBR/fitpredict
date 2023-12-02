@@ -1,4 +1,5 @@
 import 'package:fitpredict/pages/register_page.dart';
+import 'package:fitpredict/widgets/alert.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -39,8 +40,23 @@ class _HomePageState extends State<HomePage> {
                       builder: (context) => const RegisterPage(),
                     ),
                   );
+                  showAlert(null, 'Teste');
                 },
                 child: const Text('Ir para cadastro'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  showSuccess('Teste sucesso');
+                },
+                child: const Text('Sucesso'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  showError('Teste erro');
+                },
+                child: const Text('Erro'),
               ),
             ],
           ),
