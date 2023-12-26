@@ -23,7 +23,7 @@ model User {
   gender      Gender
   height      Int
   weight      Int
-  totalSteps  Int
+  totalSteps  Int      @default(0)
   lastSync    DateTime @default(now())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
