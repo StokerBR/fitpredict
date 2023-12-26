@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:hive/hive.dart';
+part 'user.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 1, adapterName: 'UserAdapter')
 class User {
   User({
     required this.name,
@@ -13,19 +14,19 @@ class User {
   });
 
   @HiveField(0)
-  final String name;
+  String name;
 
   @HiveField(1)
-  final String email;
+  String email;
 
   @HiveField(2)
-  final String gender;
+  String gender;
 
   @HiveField(3)
-  final int height;
+  int height;
 
   @HiveField(4)
-  final int weight;
+  int weight;
 
   // Retorna o usuário a partir de um Map
   factory User.fromMap(Map<String, dynamic> map) {
@@ -47,6 +48,12 @@ class User {
   static User? fromBox() {
     final userBox = Hive.box<User>('userBox');
     return userBox.get('user');
+  }
+
+  // Salva o usuário no Hive
+  void saveToBox() {
+    final userBox = Hive.box<User>('userBox');
+    userBox.put('user', this);
   }
 
   // Retorna um Map com os dados do usuário

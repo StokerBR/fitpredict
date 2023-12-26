@@ -4,11 +4,6 @@ class AppTheme {
   static ThemeData get themeData {
     return ThemeData(
       useMaterial3: true,
-      pageTransitionsTheme: const PageTransitionsTheme(
-        builders: {
-          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-        },
-      ),
       // colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
       colorScheme: ColorScheme(
         primary: AppColors.primary,
@@ -22,6 +17,14 @@ class AppTheme {
         onBackground: AppColors.primary,
         onError: Colors.white,
         brightness: Brightness.light,
+      ),
+
+      // Transições de página
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        },
       ),
 
       // Tema do AppBar

@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:fitpredict/enums/gender_enum.dart';
 import 'package:fitpredict/models/user.dart';
+import 'package:fitpredict/widgets/input.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -21,10 +22,33 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
 
+  bool autoValidate = false;
+
   String? _genderValue;
   List<DropdownMenuItem<String?>> genderItems = [];
 
   late User? _user;
+
+  // Realiza o cadastro
+  void _submit() async {
+    setState(() {
+      autoValidate = true;
+    });
+
+    if (_formKey.currentState!.validate()) {
+      //TODO: Enviar para a API
+
+      _user = User(
+        name: _nameController.text,
+        email: _emailController.text,
+        gender: _genderValue!,
+        height: int.parse(_heightController.text),
+        weight: int.parse(_weightController.text),
+      );
+
+      _user!.saveToBox();
+    }
+  }
 
   @override
   void initState() {
@@ -74,7 +98,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     Form(
                       key: _formKey,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      autovalidateMode: autoValidate
+                          ? AutovalidateMode.always
+                          : AutovalidateMode.disabled,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -91,6 +117,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               labelText: 'Nome',
                               counterText: "",
                             ),
+                            textCapitalization: TextCapitalization.words,
                             maxLength: 50,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -181,6 +208,40 @@ class _RegisterPageState extends State<RegisterPage> {
                               return null;
                             },
                           ),
+                          CustomInput(
+                            controller: _passwordController,
+                            labelText: 'Senha',
+                            hintText: 'Insira sua senha',
+                            textCapitalization: TextCapitalization.none,
+                            maxLength: 100,
+                            obscureText: true,
+                            passwordToggle: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Insira sua senha';
+                              } else if (value.length < 6) {
+                                return 'A senha deve ter pelo menos 6 caracteres';
+                              }
+                              return null;
+                            },
+                          ),
+                          CustomInput(
+                            controller: _passwordConfirmationController,
+                            labelText: 'Confirmação da senha',
+                            hintText: 'Confirme  sua senha',
+                            textCapitalization: TextCapitalization.none,
+                            maxLength: 100,
+                            obscureText: true,
+                            passwordToggle: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Insira sua senha';
+                              } else if (value.length < 6) {
+                                return 'A senha deve ter pelo menos 6 caracteres';
+                              }
+                              return null;
+                            },
+                          ),
                           TextFormField(
                             controller: _passwordController,
                             decoration: const InputDecoration(
@@ -191,9 +252,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             obscureText: true,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Insira sua senha';
-                              } else if (value.length < 6) {
-                                return 'A senha deve ter pelo menos 6 caracteres';
+                                return 'Confirme sua senha';
+                              } else if (value != _passwordController.text) {
+                                return 'As senhas não são iguais';
                               }
                               return null;
                             },
@@ -210,32 +271,20 @@ class _RegisterPageState extends State<RegisterPage> {
                               if (value == null || value.isEmpty) {
                                 return 'Confirme sua senha';
                               } else if (value != _passwordController.text) {
-                                return 'As senhas não conferem';
+                                return 'As senhas não são iguais';
                               }
                               return null;
                             },
                           ),
-                          const SizedBox(height: 40),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Validou!'),
-                                  ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Não validou!'),
-                                  ),
-                                );
-                              }
-                            },
-                            child: const Text('Salvar'),
-                          ),
                         ],
                       ),
+                    ),
+                    const Expanded(
+                      child: SizedBox(height: 40),
+                    ),
+                    ElevatedButton(
+                      onPressed: _submit,
+                      child: const Text('Salvar'),
                     ),
                     ValueListenableBuilder(
                       valueListenable: Hive.box<User>('userBox').listenable(),
@@ -245,6 +294,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         if (_user == null) return Container();
 
                         return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 40),
                             const Text(

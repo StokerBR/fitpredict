@@ -40,7 +40,6 @@ class _HomePageState extends State<HomePage> {
                       builder: (context) => const RegisterPage(),
                     ),
                   );
-                  showAlert(null, 'Teste');
                 },
                 child: const Text('Ir para cadastro'),
               ),
