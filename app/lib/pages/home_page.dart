@@ -1,3 +1,4 @@
+import 'package:fitpredict/pages/login_page.dart';
 import 'package:fitpredict/pages/register_page.dart';
 import 'package:fitpredict/widgets/alert.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,18 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
                 child: const Text('Ir para cadastro'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ),
+                  );
+                },
+                child: const Text('Ir para login'),
               ),
               const SizedBox(height: 20),
               ElevatedButton(

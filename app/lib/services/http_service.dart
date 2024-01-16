@@ -15,16 +15,16 @@ class HttpService {
   }
 
   /// Obtém os headers para a requizição
-  static Future<Map<String, dynamic>> getHeaders(
-      [Map<String, dynamic> headers = const {}, bool replace = false]) async {
+  static Map<String, dynamic> getHeaders(
+      [Map<String, dynamic> headers = const {}, bool replace = false]) {
     Map<String, dynamic> defaultHeaders = {
       "Accept": "application/json",
       "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",
     };
 
-    var tokenBox = await Hive.openBox('token');
-    String token = tokenBox.get('access_token', defaultValue: '');
+    var tokenBox = Hive.box<String>('token');
+    String token = tokenBox.get('access_token') ?? '';
 
     if (token.isNotEmpty) {
       defaultHeaders["Authorization"] = 'Bearer $token';
@@ -45,7 +45,7 @@ class HttpService {
   static Future<Response> retryRequest(RequestOptions requestOptions) async {
     final options = Options(
       method: requestOptions.method,
-      headers: await getHeaders(requestOptions.headers, true),
+      headers: getHeaders(requestOptions.headers, true),
     );
 
     return Dio().request<dynamic>(
@@ -62,7 +62,7 @@ class HttpService {
       Map<String, dynamic> headers = const {}}) async {
     Dio dio = Dio();
 
-    headers = await getHeaders(headers);
+    headers = getHeaders(headers);
 
     // Adicionar interceptor para atualizar o token caso esteja expirado
     dio.interceptors.add(
@@ -78,7 +78,13 @@ class HttpService {
                 // err.requestOptions.data['retryCount'] = 1;
                 err.requestOptions.headers
                     .addEntries({'retryCount': 1}.entries);
-                await AuthService.refreshToken();
+
+                final token = await AuthService.refreshToken();
+                if (token != null) {
+                  err.requestOptions.headers
+                      .update('Authorization', (value) => 'Bearer $token');
+                }
+
                 return handler.resolve(await retryRequest(err.requestOptions));
               } catch (e) {
                 AuthService.logout();

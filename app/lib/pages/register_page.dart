@@ -87,6 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
+        behavior: HitTestBehavior.opaque,
         child: CustomScrollView(
           slivers: [
             SliverFillRemaining(

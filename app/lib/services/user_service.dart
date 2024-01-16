@@ -7,12 +7,12 @@ import 'package:hive/hive.dart';
 class UserService {
   // Obtém os dados do usuário e salva
   static Future<Map<String, dynamic>?> getUser() async {
-    var tokenBox = await Hive.openBox('token');
+    var tokenBox = Hive.box<String>('token');
 
-    if (tokenBox.get('access_token', defaultValue: '').isNotEmpty) {
+    if ((tokenBox.get('access_token') ?? '').isNotEmpty) {
       Response? res;
       try {
-        res = await HttpService.get('auth/me/');
+        res = await HttpService.get('user');
       } catch (e) {
         showError('Falha ao obter usuário');
       }
