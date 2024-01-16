@@ -1,7 +1,7 @@
 enum GenderEnum {
   m("M", "Masculino"),
-  f("F", "Feminino"),
-  o("O", "Outro");
+  f("F", "Feminino");
+  // o("O", "Outro");
 
   final String value;
   final String name;

@@ -1,7 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:fitpredict/enums/gender_enum.dart';
+import 'package:fitpredict/functions/run_error_catch.dart';
 import 'package:fitpredict/models/user.dart';
+import 'package:fitpredict/services/http_service.dart';
+import 'package:fitpredict/widgets/alert.dart';
 import 'package:fitpredict/widgets/input.dart';
+import 'package:fitpredict/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -36,7 +41,35 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     if (_formKey.currentState!.validate()) {
-      //TODO: Enviar para a API
+      try {
+        openLoading();
+
+        var res = await HttpService.post(
+          'user/register',
+          {
+            'name': _nameController.text,
+            'gender': _genderValue,
+            'height': int.parse(_heightController.text),
+            'weight': int.parse(_weightController.text),
+            'email': _emailController.text,
+            'password': _passwordController.text,
+          },
+        );
+
+        if (res.statusCode == 200 || res.statusCode == 201) {
+          closeLoading();
+          showSuccess('Cadastro realizado com sucesso!');
+          if (context.mounted) {
+            Navigator.pop(context);
+          }
+        }
+      } catch (e) {
+        closeLoading();
+        runErrorCatch(
+          e,
+          'Erro ao realizar o cadastro. Tente novamente mais tarde.',
+        );
+      }
 
       _user = User(
         name: _nameController.text,
@@ -157,7 +190,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               } else {
                                 final height = int.tryParse(value);
                                 if (height == null ||
-                                    height <= 0 ||
+                                    height <= 100 ||
                                     height > 300) {
                                   return 'Insira uma altura válida';
                                 }
@@ -177,7 +210,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               } else {
                                 final weight = int.tryParse(value);
                                 if (weight == null ||
-                                    weight <= 0 ||
+                                    weight <= 30 ||
                                     weight > 300) {
                                   return 'Insira um peso válido';
                                 }
@@ -200,6 +233,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               counterText: "",
                             ),
                             maxLength: 70,
+                            keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Insira seu e-mail';
@@ -239,40 +273,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 return 'Insira sua senha';
                               } else if (value.length < 6) {
                                 return 'A senha deve ter pelo menos 6 caracteres';
-                              }
-                              return null;
-                            },
-                          ),
-                          TextFormField(
-                            controller: _passwordController,
-                            decoration: const InputDecoration(
-                              labelText: 'Senha',
-                              counterText: "",
-                            ),
-                            maxLength: 50,
-                            obscureText: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Confirme sua senha';
                               } else if (value != _passwordController.text) {
-                                return 'As senhas não são iguais';
-                              }
-                              return null;
-                            },
-                          ),
-                          TextFormField(
-                            controller: _passwordConfirmationController,
-                            decoration: const InputDecoration(
-                              labelText: 'Confirmação da senha',
-                              counterText: "",
-                            ),
-                            maxLength: 50,
-                            obscureText: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Confirme sua senha';
-                              } else if (value != _passwordController.text) {
-                                return 'As senhas não são iguais';
+                                return 'As senhas não coincidem';
                               }
                               return null;
                             },

@@ -56,20 +56,6 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: const Text('Ir para login'),
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  showSuccess('Teste sucesso');
-                },
-                child: const Text('Sucesso'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  showError('Teste erro');
-                },
-                child: const Text('Erro'),
-              ),
             ],
           ),
         ),
