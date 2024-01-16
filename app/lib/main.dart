@@ -10,7 +10,9 @@ void main() async {
 
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
-  Hive.openBox<User>('userBox');
+  Hive.openBox<User>('user');
+  Hive.openBox<String>('token');
+  Hive.openBox<String>('userLogin');
 
   runApp(const App());
 }

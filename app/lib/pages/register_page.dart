@@ -287,7 +287,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: const Text('Salvar'),
                     ),
                     ValueListenableBuilder(
-                      valueListenable: Hive.box<User>('userBox').listenable(),
+                      valueListenable: Hive.box<User>('user').listenable(),
                       builder: (context, value, child) {
                         _user = value.get('user');
 
