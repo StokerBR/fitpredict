@@ -17,3 +17,11 @@
 - Uso de sensores do celular para coleta de dados e processamento na nuvem.
 - Acesso contínuo em diferentes plataformas e dispositivos.
 - Integração do conceito de gêmeo digital para personalização do perfil do usuário e sincronização com o servidor em nuvem.
+
+## Atributos de Qualidade Prioritários
+
+1. **Funcionalidade**: Dada a natureza do FitPredict, a precisão e a funcionalidade correta são cruciais. Métricas: cobertura de testes dos casos de uso, precisão das funcionalidades de monitoramento de fitness.
+
+2. **Usabilidade**: Essencial para a experiência do usuário, especialmente em aplicativos de condicionamento físico. Métricas: pesquisas de satisfação do usuário, testes de usabilidade, taxa de retenção de usuários.
+
+3. **Eficiência**: Importante para o desempenho e economia de recursos, crucial em dispositivos móveis. Métricas: tempo de resposta da API, uso de recursos do aplicativo e do dashboard.
