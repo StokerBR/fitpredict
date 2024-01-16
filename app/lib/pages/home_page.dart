@@ -1,3 +1,4 @@
+import 'package:fitpredict/pages/login_page.dart';
 import 'package:fitpredict/pages/register_page.dart';
 import 'package:fitpredict/widgets/alert.dart';
 import 'package:flutter/material.dart';
@@ -46,16 +47,14 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  showSuccess('Teste sucesso');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ),
+                  );
                 },
-                child: const Text('Sucesso'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  showError('Teste erro');
-                },
-                child: const Text('Erro'),
+                child: const Text('Ir para login'),
               ),
             ],
           ),

@@ -46,13 +46,13 @@ class User {
 
   // Retorna o usuário salvo no Hive
   static User? fromBox() {
-    final userBox = Hive.box<User>('userBox');
+    final userBox = Hive.box<User>('user');
     return userBox.get('user');
   }
 
   // Salva o usuário no Hive
   void saveToBox() {
-    final userBox = Hive.box<User>('userBox');
+    final userBox = Hive.box<User>('user');
     userBox.put('user', this);
   }
 
