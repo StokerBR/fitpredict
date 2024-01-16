@@ -8,7 +8,7 @@ Para visualizar a documentação da API, acesse o [Swagger](#swagger).
 
 Esse usuário será criado automaticamente ao rodar os [seeders](#rodar-seeders):
 
-- Usuário: `usuario@avalieaqui.com`
+- Usuário: `usuario@fitpredict.com`
 - Senha: `fitpredict123`
 
 ## Informações/comandos para o desenvolvimento

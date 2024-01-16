@@ -63,6 +63,11 @@ export class UserService {
         id: true,
         name: true,
         email: true,
+        gender: true,
+        height: true,
+        weight: true,
+        stats: true,
+        totalSteps: true,
       },
     });
   }

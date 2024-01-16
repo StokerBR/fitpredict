@@ -10,10 +10,11 @@ import {
 import { UserService } from './user.service';
 import { RegisterUserDto, UpdateUserDto } from './dto';
 import {
-  ApiAcceptedResponse,
   ApiBearerAuth,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
+  ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtUserAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -25,7 +26,7 @@ export class UserController {
 
   // Cadastrar um novo usuário
   @Post('register')
-  @ApiAcceptedResponse({
+  @ApiCreatedResponse({
     // Documentação da resposta pro swagger
     description: 'Cadastro realizado com sucesso',
     content: {
@@ -72,10 +73,11 @@ export class UserController {
     return this.userService.register(registerUserDto);
   }
 
+  // Obter os dados do usuário logado
   @Get('')
   @UseGuards(JwtUserAuthGuard)
   @ApiBearerAuth('User access-token')
-  @ApiAcceptedResponse({
+  @ApiOkResponse({
     // Documentação da resposta pro swagger
     description: 'Dados do usuário obtidos com sucesso',
     content: {
@@ -95,11 +97,11 @@ export class UserController {
     return this.userService.getUser(req);
   }
 
-  // Cadastrar um novo usuário
+  // Editar dados do usuário
   @Put('')
   @UseGuards(JwtUserAuthGuard)
   @ApiBearerAuth('User access-token')
-  @ApiAcceptedResponse({
+  @ApiOkResponse({
     // Documentação da resposta pro swagger
     description: 'Dados atualizados com sucesso',
     content: {
