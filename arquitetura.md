@@ -1,5 +1,7 @@
 # Arquitetura
 
+![Diagrama arquitetura](diagrama_arquiterura.png)
+
 ## Arquitetura de Software
 
 1. **Aplicativo Mobile**: Desenvolvido em Flutter, responsável pela interface do usuário, coleta e processamento de dados.
