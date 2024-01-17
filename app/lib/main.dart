@@ -1,6 +1,7 @@
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/pages/home_page.dart';
+import 'package:fitpredict/pages/main_page.dart';
 import 'package:fitpredict/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -24,7 +25,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FitPredict',
-      home: const HomePage(),
+      home: const MainPage(),
       theme: AppTheme.themeData,
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,

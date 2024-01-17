@@ -79,8 +79,10 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 CustomInput(
                   controller: _emailController,
+                  labelText: 'Email',
                   hintText: 'Insira seu email',
                   textCapitalization: TextCapitalization.none,
+                  keyboardType: TextInputType.emailAddress,
                   maxLength: 100,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -89,8 +91,10 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
+                const SizedBox(height: 20),
                 CustomInput(
                   controller: _passwordController,
+                  labelText: 'Senha',
                   hintText: 'Insira sua senha',
                   textCapitalization: TextCapitalization.none,
                   maxLength: 100,

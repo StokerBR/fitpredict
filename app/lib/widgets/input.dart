@@ -1,9 +1,11 @@
+import 'package:fitpredict/widgets/input_label.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomInput extends StatefulWidget {
   const CustomInput({
     super.key,
+    this.label,
     this.labelText,
     this.hintText,
     this.errorText,
@@ -32,6 +34,7 @@ class CustomInput extends StatefulWidget {
     this.textCapitalization,
   });
 
+  final String? label;
   final String? hintText;
   final String? labelText;
   final String? errorText;
@@ -74,49 +77,62 @@ class _CustomInputState extends State<CustomInput> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      decoration: widget.decoration ??
-          InputDecoration(
-            labelText: widget.labelText,
-            hintText: widget.hintText,
-            errorText: widget.errorText,
-            counterText: widget.counterText,
-            suffixIcon: widget.suffixIcon ??
-                (widget.passwordToggle ?? false
-                    ? GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            passwordHidden = !passwordHidden!;
-                          });
-                        },
-                        child: Icon(
-                          passwordHidden ?? false
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Colors.grey[600],
-                        ),
-                      )
-                    : null),
-            prefixIcon: widget.prefixIcon,
-            suffix: widget.suffix,
-            prefix: widget.prefix,
-          ),
-      textCapitalization: widget.textCapitalization ?? TextCapitalization.words,
-      textInputAction: widget.textInputAction,
-      onFieldSubmitted: widget.onFieldSubmitted,
-      keyboardType: widget.keyboardType,
-      controller: widget.controller,
-      validator: widget.validator,
-      maxLength: widget.maxLength,
-      readOnly: widget.readOnly,
-      obscureText: passwordHidden!,
-      enableSuggestions: widget.enableSuggestions,
-      autocorrect: widget.autocorrect,
-      inputFormatters: widget.inputFormatters,
-      maxLines: widget.maxLines,
-      focusNode: widget.focusNode,
-      onChanged: widget.onChanged,
-      scrollPadding: widget.scrollPadding,
+    return Column(
+      children: [
+        widget.label != null
+            ? Column(
+                children: [
+                  InputLabel(widget.label!),
+                  const SizedBox(height: 10),
+                ],
+              )
+            : const SizedBox(),
+        TextFormField(
+          decoration: widget.decoration ??
+              InputDecoration(
+                labelText: widget.labelText,
+                hintText: widget.hintText,
+                errorText: widget.errorText,
+                counterText: widget.counterText,
+                suffixIcon: widget.suffixIcon ??
+                    (widget.passwordToggle ?? false
+                        ? GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                passwordHidden = !passwordHidden!;
+                              });
+                            },
+                            child: Icon(
+                              passwordHidden ?? false
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.grey[600],
+                            ),
+                          )
+                        : null),
+                prefixIcon: widget.prefixIcon,
+                suffix: widget.suffix,
+                prefix: widget.prefix,
+              ),
+          textCapitalization:
+              widget.textCapitalization ?? TextCapitalization.words,
+          textInputAction: widget.textInputAction,
+          onFieldSubmitted: widget.onFieldSubmitted,
+          keyboardType: widget.keyboardType,
+          controller: widget.controller,
+          validator: widget.validator,
+          maxLength: widget.maxLength,
+          readOnly: widget.readOnly,
+          obscureText: passwordHidden!,
+          enableSuggestions: widget.enableSuggestions,
+          autocorrect: widget.autocorrect,
+          inputFormatters: widget.inputFormatters,
+          maxLines: widget.maxLines,
+          focusNode: widget.focusNode,
+          onChanged: widget.onChanged,
+          scrollPadding: widget.scrollPadding,
+        ),
+      ],
     );
   }
 }
