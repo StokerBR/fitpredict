@@ -1,5 +1,4 @@
 import 'package:email_validator/email_validator.dart';
-import 'package:fitpredict/enums/gender_enum.dart';
 import 'package:fitpredict/forms/user_form.dart';
 import 'package:fitpredict/functions/run_error_catch.dart';
 import 'package:fitpredict/models/user.dart';
@@ -8,7 +7,6 @@ import 'package:fitpredict/widgets/alert.dart';
 import 'package:fitpredict/widgets/input.dart';
 import 'package:fitpredict/widgets/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

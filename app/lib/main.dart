@@ -1,6 +1,5 @@
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/user.dart';
-import 'package:fitpredict/pages/home_page.dart';
 import 'package:fitpredict/pages/main_page.dart';
 import 'package:fitpredict/theme.dart';
 import 'package:flutter/material.dart';

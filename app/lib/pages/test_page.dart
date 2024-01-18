@@ -1,5 +1,6 @@
 import 'package:fitpredict/pages/login_page.dart';
 import 'package:fitpredict/pages/register_page.dart';
+import 'package:fitpredict/pages/welcome_page.dart';
 import 'package:fitpredict/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:pedometer/pedometer.dart';
@@ -23,10 +24,12 @@ class _TestPageState extends State<TestPage> {
   }
 
   void onStepCount(StepCount event) {
-    print(event);
-    setState(() {
-      _steps = event.steps.toString();
-    });
+    try {
+      print(event);
+      setState(() {
+        _steps = event.steps.toString();
+      });
+    } catch (e) {}
   }
 
   void onPedestrianStatusChanged(PedestrianStatus event) {
@@ -45,20 +48,26 @@ class _TestPageState extends State<TestPage> {
   }
 
   void onStepCountError(error) {
-    print('onStepCountError: $error');
-    setState(() {
-      _steps = 'Step Count not available';
-    });
+    try {
+      print('onStepCountError: $error');
+      setState(() {
+        _steps = 'Step Count not available';
+      });
+    } catch (e) {}
   }
 
   void initPlatformState() {
-    _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
-    _pedestrianStatusStream
-        .listen(onPedestrianStatusChanged)
-        .onError(onPedestrianStatusError);
+    try {
+      _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
+      _pedestrianStatusStream
+          .listen(onPedestrianStatusChanged)
+          .onError(onPedestrianStatusError);
 
-    _stepCountStream = Pedometer.stepCountStream;
-    _stepCountStream.listen(onStepCount).onError(onStepCountError);
+      _stepCountStream = Pedometer.stepCountStream;
+      _stepCountStream.listen(onStepCount).onError(onStepCountError);
+    } catch (e) {
+      print(e);
+    }
 
     if (!mounted) return;
   }
@@ -75,6 +84,17 @@ class _TestPageState extends State<TestPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WelcomePage(),
+                    ),
+                  );
+                },
+                child: const Text('Ir para welcome'),
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {

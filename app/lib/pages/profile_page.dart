@@ -110,7 +110,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        AuthService.logout();
+                        AuthService.logout(true);
                         Navigator.pop(context);
                       },
                       child: const Text('Sair'),
