@@ -1,6 +1,7 @@
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/pages/main_page.dart';
+import 'package:fitpredict/pages/welcome_page.dart';
 import 'package:fitpredict/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -20,11 +21,21 @@ void main() async {
 class App extends StatelessWidget {
   const App({super.key});
 
+  Widget getInitialPage() {
+    User? user = Hive.box<User>('user').get('user');
+
+    if (user == null) {
+      return const WelcomePage();
+    }
+
+    return const MainPage();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FitPredict',
-      home: const MainPage(),
+      home: getInitialPage(),
       theme: AppTheme.themeData,
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
