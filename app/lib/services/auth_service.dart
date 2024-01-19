@@ -118,9 +118,6 @@ class AuthService {
     if (clearUser) {
       clearUserLogin();
     }
-    if (redirect) {
-      redirectLogin();
-    }
   }
 
   // Redireciona para a pagina de login

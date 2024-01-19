@@ -22,8 +22,15 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String? passwordError;
+  bool emailReadonly = false;
 
   void _handleLogin() async {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => const HomePage(),
+      ),
+      (route) => false,
+    );
     if (_formKey.currentState!.validate()) {
       Map<String, dynamic>? result = await AuthService.login(
         _emailController.text,
@@ -39,16 +46,18 @@ class _LoginPageState extends State<LoginPage> {
 
           if (context.mounted) {
             if (widget.redirectHome) {
-              Navigator.pushReplacement(
-                context,
+              Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
                   builder: (context) => const HomePage(),
                 ),
+                (route) => false,
               );
             } else {
               Navigator.pop(context);
             }
           }
+
+          // TODO: Executar sincronização de dados aqui
 
           showSuccess('Login realizado com sucesso!');
         } else {
@@ -58,6 +67,17 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     }
+  }
+
+  @override
+  void initState() {
+    String? userEmail = Hive.box<String>('userLogin').get('email');
+    if (userEmail != null) {
+      _emailController.text = userEmail;
+      emailReadonly = true;
+    }
+
+    super.initState();
   }
 
   @override
@@ -79,9 +99,12 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 CustomInput(
                   controller: _emailController,
+                  labelText: 'Email',
                   hintText: 'Insira seu email',
                   textCapitalization: TextCapitalization.none,
+                  keyboardType: TextInputType.emailAddress,
                   maxLength: 100,
+                  readOnly: emailReadonly,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira seu email';
@@ -89,8 +112,10 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
+                const SizedBox(height: 20),
                 CustomInput(
                   controller: _passwordController,
+                  labelText: 'Senha',
                   hintText: 'Insira sua senha',
                   textCapitalization: TextCapitalization.none,
                   maxLength: 100,
@@ -111,27 +136,6 @@ class _LoginPageState extends State<LoginPage> {
                 ElevatedButton(
                   onPressed: _handleLogin,
                   child: const Text('Entrar'),
-                ),
-                ValueListenableBuilder(
-                  valueListenable: Hive.box<String>('token').listenable(),
-                  builder: (context, value, child) {
-                    final token = value.get('access_token');
-
-                    if (token == null) return Container();
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 40),
-                        Text(
-                          'Access Token: $token',
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
                 ),
               ],
             ),

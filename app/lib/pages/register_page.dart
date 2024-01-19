@@ -1,14 +1,13 @@
-import 'package:dio/dio.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:fitpredict/enums/gender_enum.dart';
+import 'package:fitpredict/forms/user_form.dart';
 import 'package:fitpredict/functions/run_error_catch.dart';
 import 'package:fitpredict/models/user.dart';
+import 'package:fitpredict/pages/main_page.dart';
 import 'package:fitpredict/services/http_service.dart';
 import 'package:fitpredict/widgets/alert.dart';
 import 'package:fitpredict/widgets/input.dart';
 import 'package:fitpredict/widgets/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,39 +17,37 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  late UserForm _userForm;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordConfirmationController =
       TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
-  final TextEditingController _weightController = TextEditingController();
 
   bool autoValidate = false;
-
-  String? _genderValue;
-  List<DropdownMenuItem<String?>> genderItems = [];
 
   late User? _user;
 
   // Realiza o cadastro
   void _submit() async {
     setState(() {
+      _userForm.autoValidate = true;
       autoValidate = true;
     });
 
-    if (_formKey.currentState!.validate()) {
+    if (_userForm.formKey.currentState!.validate() &&
+        _formKey.currentState!.validate()) {
       try {
         openLoading();
 
         var res = await HttpService.post(
           'user/register',
           {
-            'name': _nameController.text,
-            'gender': _genderValue,
-            'height': int.parse(_heightController.text),
-            'weight': int.parse(_weightController.text),
+            'name': _userForm.nameController.text,
+            'gender': _userForm.genderValue,
+            'height': int.parse(_userForm.heightController.text),
+            'weight': int.parse(_userForm.weightController.text),
             'email': _emailController.text,
             'password': _passwordController.text,
           },
@@ -58,10 +55,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
         if (res.statusCode == 200 || res.statusCode == 201) {
           closeLoading();
-          showSuccess('Cadastro realizado com sucesso!');
+
           if (context.mounted) {
-            Navigator.pop(context);
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) => const MainPage(),
+              ),
+              (route) => false,
+            );
           }
+
+          // TODO: Executar sincronização de dados aqui
+
+          showSuccess('Cadastro realizado com sucesso!');
         }
       } catch (e) {
         closeLoading();
@@ -72,11 +78,11 @@ class _RegisterPageState extends State<RegisterPage> {
       }
 
       _user = User(
-        name: _nameController.text,
+        name: _userForm.nameController.text,
         email: _emailController.text,
-        gender: _genderValue!,
-        height: int.parse(_heightController.text),
-        weight: int.parse(_weightController.text),
+        gender: _userForm.genderValue!,
+        height: int.parse(_userForm.heightController.text),
+        weight: int.parse(_userForm.weightController.text),
       );
 
       _user!.saveToBox();
@@ -85,26 +91,18 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void initState() {
-    // Inicializa a lista de itens do dropdown de gênero
-    for (var gender in GenderEnum.values) {
-      genderItems.add(
-        DropdownMenuItem(
-          value: gender.value,
-          child: Text(gender.name),
-        ),
-      );
-    }
+    _userForm = UserForm(setState: setState);
 
     // Carrega os dados do usuário salvo
     _user = User.fromBox();
 
     // Preenche os campos do formulário com os dados do usuário
     if (_user != null) {
-      _nameController.text = _user!.name;
+      _userForm.nameController.text = _user!.name;
       _emailController.text = _user!.email;
-      _genderValue = _user!.gender;
-      _heightController.text = _user!.height.toString();
-      _weightController.text = _user!.weight.toString();
+      _userForm.genderValue = _user!.gender;
+      _userForm.heightController.text = _user!.height.toString();
+      _userForm.weightController.text = _user!.weight.toString();
     }
 
     super.initState();
@@ -130,6 +128,24 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Text(
+                      'Dados pessoais:',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    _userForm.getForm(),
+                    const SizedBox(height: 30),
+                    const Text(
+                      'Dados de login:',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     Form(
                       key: _formKey,
                       autovalidateMode: autoValidate
@@ -138,100 +154,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Dados pessoais:',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          TextFormField(
-                            controller: _nameController,
-                            decoration: const InputDecoration(
-                              labelText: 'Nome',
-                              counterText: "",
-                            ),
-                            textCapitalization: TextCapitalization.words,
-                            maxLength: 50,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Insira seu nome';
-                              }
-                              return null;
-                            },
-                          ),
-                          DropdownButtonFormField<String?>(
-                            value: _genderValue,
-                            decoration: const InputDecoration(
-                              labelText: 'Gênero',
-                            ),
-                            items: genderItems,
-                            onChanged: (value) {
-                              setState(() {
-                                _genderValue = value;
-                              });
-                            },
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Selecione seu gênero';
-                              }
-                              return null;
-                            },
-                          ),
-                          TextFormField(
-                            controller: _heightController,
-                            decoration: const InputDecoration(
-                              labelText: 'Altura (cm)',
-                            ),
-                            keyboardType: TextInputType.number,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Insira sua altura';
-                              } else {
-                                final height = int.tryParse(value);
-                                if (height == null ||
-                                    height <= 100 ||
-                                    height > 300) {
-                                  return 'Insira uma altura válida';
-                                }
-                              }
-                              return null;
-                            },
-                          ),
-                          TextFormField(
-                            controller: _weightController,
-                            decoration: const InputDecoration(
-                              labelText: 'Peso (kg)',
-                            ),
-                            keyboardType: TextInputType.number,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Insira seu peso';
-                              } else {
-                                final weight = int.tryParse(value);
-                                if (weight == null ||
-                                    weight <= 30 ||
-                                    weight > 300) {
-                                  return 'Insira um peso válido';
-                                }
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 40),
-                          const Text(
-                            'Dados de login:',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          TextFormField(
+                          CustomInput(
                             controller: _emailController,
-                            decoration: const InputDecoration(
-                              labelText: 'E-mail',
-                              counterText: "",
-                            ),
+                            labelText: 'E-mail',
+                            counterText: '',
                             maxLength: 70,
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
@@ -243,6 +169,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               return null;
                             },
                           ),
+                          const SizedBox(height: 20),
                           CustomInput(
                             controller: _passwordController,
                             labelText: 'Senha',
@@ -260,6 +187,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               return null;
                             },
                           ),
+                          const SizedBox(height: 20),
                           CustomInput(
                             controller: _passwordConfirmationController,
                             labelText: 'Confirmação da senha',
@@ -283,63 +211,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const Expanded(
-                      child: SizedBox(height: 40),
+                      child: SizedBox(height: 30),
                     ),
                     ElevatedButton(
                       onPressed: _submit,
                       child: const Text('Salvar'),
-                    ),
-                    ValueListenableBuilder(
-                      valueListenable: Hive.box<User>('user').listenable(),
-                      builder: (context, value, child) {
-                        _user = value.get('user');
-
-                        if (_user == null) return Container();
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 40),
-                            const Text(
-                              'Dados do usuário:',
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              'Nome: ${_user!.name}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              'E-mail: ${_user!.email}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              'Sexo: ${GenderEnum.values.where((e) => e.value == _user!.gender).firstOrNull?.name ?? ''}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              'Altura: ${_user!.height}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              'Peso: ${_user!.weight}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
                     ),
                   ],
                 ),
