@@ -35,7 +35,7 @@ class _MainPageState extends State<MainPage> {
               currentPageIndex = index;
             });
           },
-          indicatorColor: AppColors.blue[800],
+          indicatorColor: AppColors.primary,
           selectedIndex: currentPageIndex,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           indicatorShape: const RoundedRectangleBorder(
