@@ -2,6 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:fitpredict/forms/user_form.dart';
 import 'package:fitpredict/functions/run_error_catch.dart';
 import 'package:fitpredict/models/user.dart';
+import 'package:fitpredict/pages/main_page.dart';
 import 'package:fitpredict/services/http_service.dart';
 import 'package:fitpredict/widgets/alert.dart';
 import 'package:fitpredict/widgets/input.dart';
@@ -54,10 +55,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
         if (res.statusCode == 200 || res.statusCode == 201) {
           closeLoading();
-          showSuccess('Cadastro realizado com sucesso!');
+
           if (context.mounted) {
-            Navigator.pop(context);
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) => const MainPage(),
+              ),
+              (route) => false,
+            );
           }
+
+          // TODO: Executar sincronização de dados aqui
+
+          showSuccess('Cadastro realizado com sucesso!');
         }
       } catch (e) {
         closeLoading();

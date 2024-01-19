@@ -38,6 +38,9 @@ class _MainPageState extends State<MainPage> {
           indicatorColor: AppColors.blue[800],
           selectedIndex: currentPageIndex,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+          indicatorShape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
           destinations: const <Widget>[
             NavigationDestination(
               selectedIcon: Icon(Icons.code),

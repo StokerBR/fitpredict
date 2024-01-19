@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:fitpredict/pages/login_page.dart';
 import 'package:fitpredict/pages/register_page.dart';
 import 'package:fitpredict/pages/welcome_page.dart';
 import 'package:fitpredict/theme.dart';
+import 'package:fitpredict/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:pedometer/pedometer.dart';
 
@@ -64,7 +67,8 @@ class _TestPageState extends State<TestPage> {
           .onError(onPedestrianStatusError);
 
       _stepCountStream = Pedometer.stepCountStream;
-      _stepCountStream.listen(onStepCount).onError(onStepCountError);
+      _stepCountStream.listen(onStepCount,
+          onError: onStepCountError, cancelOnError: true);
     } catch (e) {
       print(e);
     }
@@ -118,6 +122,16 @@ class _TestPageState extends State<TestPage> {
                   );
                 },
                 child: const Text('Ir para login'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  openLoading(message: 'Sincronizando dados...');
+                  Timer(const Duration(seconds: 3), () {
+                    closeLoading();
+                  });
+                },
+                child: const Text('Teste loading mensagem'),
               ),
               Divider(
                 height: 50,
