@@ -1,4 +1,4 @@
-import 'package:fitpredict/pages/home_page.dart';
+import 'package:fitpredict/pages/main_page.dart';
 import 'package:fitpredict/services/auth_service.dart';
 import 'package:fitpredict/widgets/alert.dart';
 import 'package:fitpredict/widgets/input.dart';
@@ -25,12 +25,6 @@ class _LoginPageState extends State<LoginPage> {
   bool emailReadonly = false;
 
   void _handleLogin() async {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const HomePage(),
-      ),
-      (route) => false,
-    );
     if (_formKey.currentState!.validate()) {
       Map<String, dynamic>? result = await AuthService.login(
         _emailController.text,
@@ -48,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
             if (widget.redirectHome) {
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
-                  builder: (context) => const HomePage(),
+                  builder: (context) => const MainPage(),
                 ),
                 (route) => false,
               );

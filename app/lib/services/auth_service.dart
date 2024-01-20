@@ -62,8 +62,6 @@ class AuthService {
               'error': 'Falha ao realizar login.',
             };
           } */
-        } else {
-          message = e.toString();
         }
 
         showError(message);
