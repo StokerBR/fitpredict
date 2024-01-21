@@ -12,6 +12,9 @@ class User {
     required this.gender,
     required this.height,
     required this.weight,
+    this.totalSteps = 0,
+    this.lastDeviceSteps,
+    this.lastSync,
   });
 
   @HiveField(0)
@@ -29,6 +32,15 @@ class User {
   @HiveField(4)
   int weight;
 
+  @HiveField(5)
+  int totalSteps;
+
+  @HiveField(6)
+  int? lastDeviceSteps;
+
+  @HiveField(7)
+  String? lastSync;
+
   // Retorna o usuário a partir de um Map
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
@@ -37,6 +49,8 @@ class User {
       gender: map['gender'],
       height: map['height'],
       weight: map['weight'],
+      totalSteps: map['totalSteps'],
+      lastSync: map['lastSync'],
     );
   }
 
@@ -59,13 +73,30 @@ class User {
 
   // Retorna um Map com os dados do usuário
   Map<String, dynamic> toMap() => {
-        "name": name,
-        "email": email,
-        "gender": gender,
-        "height": height,
-        "weight": weight,
+        'name': name,
+        'email': email,
+        'gender': gender,
+        'height': height,
+        'weight': weight,
+        'totalSteps': totalSteps,
+        'lastSync': lastSync,
       };
 
   // Retorna um JSON com os dados do usuário
   String toJson() => jsonEncode(toMap());
+
+  // Adiciona os passos do dispositivo aos passos totais, e retorna a diferença
+  int addDeviceSteps(int steps) {
+    if (lastDeviceSteps == null) {
+      lastDeviceSteps = steps;
+    } else if (steps < lastDeviceSteps!) {
+      lastDeviceSteps = 0;
+    }
+
+    int diff = steps - lastDeviceSteps!;
+    totalSteps += diff;
+    lastDeviceSteps = steps;
+
+    return diff;
+  }
 }

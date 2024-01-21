@@ -1,4 +1,5 @@
 import 'package:fitpredict/enums/gender_enum.dart';
+import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/services/auth_service.dart';
 import 'package:fitpredict/widgets/menu_bar.dart';
@@ -95,11 +96,11 @@ class ProfilePage extends StatelessWidget {
             action: () {
               // AuthService.logout();
               showDialog(
-                context: context,
+                context: navigatorKey.currentState!.overlay!.context,
                 builder: (context) => AlertDialog(
                   title: const Text('Sair do app'),
                   content: const Text(
-                    'Tem certeza que deseja sair do app? Todos os dados não sincronizados serão perdidos.',
+                    'Tem certeza que deseja deslogar do app? Todos os dados não sincronizados serão perdidos.',
                   ),
                   actions: [
                     TextButton(
@@ -111,7 +112,9 @@ class ProfilePage extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         AuthService.logout(true);
-                        Navigator.pop(context);
+                        Navigator.pop(
+                          navigatorKey.currentState!.overlay!.context,
+                        );
                       },
                       child: const Text('Sair'),
                     ),

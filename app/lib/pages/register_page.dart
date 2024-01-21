@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:fitpredict/forms/user_form.dart';
 import 'package:fitpredict/functions/run_error_catch.dart';
+import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/pages/main_page.dart';
 import 'package:fitpredict/services/http_service.dart';
@@ -41,20 +42,21 @@ class _RegisterPageState extends State<RegisterPage> {
       try {
         openLoading();
 
-        var res = await HttpService.post(
-          'user/register',
-          {
-            'name': _userForm.nameController.text,
-            'gender': _userForm.genderValue,
-            'height': int.parse(_userForm.heightController.text),
-            'weight': int.parse(_userForm.weightController.text),
-            'email': _emailController.text,
-            'password': _passwordController.text,
-          },
-        );
+        Map<String, dynamic> userData = {
+          'name': _userForm.nameController.text,
+          'gender': _userForm.genderValue,
+          'height': int.parse(_userForm.heightController.text),
+          'weight': int.parse(_userForm.weightController.text),
+          'email': _emailController.text,
+          'password': _passwordController.text,
+        };
+
+        var res = await HttpService.post('user/register', userData);
 
         if (res.statusCode == 200 || res.statusCode == 201) {
           closeLoading();
+
+          loggedUser = User.fromJson(res.data);
 
           if (context.mounted) {
             Navigator.of(context).pushAndRemoveUntil(

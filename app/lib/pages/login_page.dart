@@ -1,3 +1,4 @@
+import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/pages/main_page.dart';
 import 'package:fitpredict/services/auth_service.dart';
 import 'package:fitpredict/widgets/alert.dart';
@@ -33,11 +34,6 @@ class _LoginPageState extends State<LoginPage> {
 
       if (result != null) {
         if (result['success']) {
-          AuthService.saveUserLogin(
-            _emailController.text,
-            _passwordController.text,
-          );
-
           if (context.mounted) {
             if (widget.redirectHome) {
               Navigator.of(context).pushAndRemoveUntil(
@@ -65,9 +61,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    String? userEmail = Hive.box<String>('userLogin').get('email');
-    if (userEmail != null) {
-      _emailController.text = userEmail;
+    User? user = User.fromBox();
+    if (user != null) {
+      _emailController.text = user.email;
       emailReadonly = true;
     }
 

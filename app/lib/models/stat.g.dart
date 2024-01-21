@@ -1,52 +1,43 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user.dart';
+part of 'stat.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserAdapter extends TypeAdapter<User> {
+class StatAdapter extends TypeAdapter<Stat> {
   @override
-  final int typeId = 1;
+  final int typeId = 2;
 
   @override
-  User read(BinaryReader reader) {
+  Stat read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return User(
-      name: fields[0] as String,
-      email: fields[1] as String,
-      gender: fields[2] as String,
-      height: fields[3] as int,
-      weight: fields[4] as int,
-      totalSteps: fields[5] as int,
-      lastDeviceSteps: fields[6] as int?,
-      lastSync: fields[7] as String?,
+    return Stat(
+      date: fields[0] as String,
+      steps: fields[1] as int,
+      distance: fields[2] as int,
+      calories: fields[3] as int,
+      lastSync: fields[4] as String?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, User obj) {
+  void write(BinaryWriter writer, Stat obj) {
     writer
-      ..writeByte(8)
-      ..writeByte(0)
-      ..write(obj.name)
-      ..writeByte(1)
-      ..write(obj.email)
-      ..writeByte(2)
-      ..write(obj.gender)
-      ..writeByte(3)
-      ..write(obj.height)
-      ..writeByte(4)
-      ..write(obj.weight)
       ..writeByte(5)
-      ..write(obj.totalSteps)
-      ..writeByte(6)
-      ..write(obj.lastDeviceSteps)
-      ..writeByte(7)
+      ..writeByte(0)
+      ..write(obj.date)
+      ..writeByte(1)
+      ..write(obj.steps)
+      ..writeByte(2)
+      ..write(obj.distance)
+      ..writeByte(3)
+      ..write(obj.calories)
+      ..writeByte(4)
       ..write(obj.lastSync);
   }
 
@@ -56,7 +47,7 @@ class UserAdapter extends TypeAdapter<User> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserAdapter &&
+      other is StatAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
