@@ -53,7 +53,7 @@ class AppTheme {
           disabledBackgroundColor: AppColors.blue[900]!,
           disabledForegroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(10),
           ),
           elevation: 0,
           shadowColor: Colors.transparent,

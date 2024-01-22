@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:fitpredict/pages/login_page.dart';
-import 'package:fitpredict/pages/register_page.dart';
+import 'package:fitpredict/enums/pedestrian_status.dart';
+import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/pages/welcome_page.dart';
 import 'package:fitpredict/theme.dart';
 import 'package:fitpredict/widgets/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:pedometer/pedometer.dart';
+import 'package:gif/gif.dart';
 
 class TestPage extends StatefulWidget {
   const TestPage({super.key});
@@ -15,65 +15,27 @@ class TestPage extends StatefulWidget {
   State<TestPage> createState() => _TestPageState();
 }
 
-class _TestPageState extends State<TestPage> {
-  late Stream<StepCount> _stepCountStream;
-  late Stream<PedestrianStatus> _pedestrianStatusStream;
-  String _status = '?', _steps = '?';
+class _TestPageState extends State<TestPage> with TickerProviderStateMixin {
+  late GifController _controller;
+  int _steps = 0;
+  MovementStatus _status = MovementStatus.stopped;
 
   @override
   void initState() {
+    _controller = GifController(vsync: this);
+
+    pedometerService.stepCount.addListener(() {
+      setState(() {
+        _steps = pedometerService.stepCount.value;
+      });
+    });
+    pedometerService.pedestrianStatus.addListener(() {
+      setState(() {
+        _status = pedometerService.pedestrianStatus.value;
+      });
+    });
+
     super.initState();
-    initPlatformState();
-  }
-
-  void onStepCount(StepCount event) {
-    try {
-      print(event);
-      setState(() {
-        _steps = event.steps.toString();
-      });
-    } catch (e) {}
-  }
-
-  void onPedestrianStatusChanged(PedestrianStatus event) {
-    print(event);
-    setState(() {
-      _status = event.status;
-    });
-  }
-
-  void onPedestrianStatusError(error) {
-    print('onPedestrianStatusError: $error');
-    setState(() {
-      _status = 'Pedestrian Status not available';
-    });
-    print(_status);
-  }
-
-  void onStepCountError(error) {
-    try {
-      print('onStepCountError: $error');
-      setState(() {
-        _steps = 'Step Count not available';
-      });
-    } catch (e) {}
-  }
-
-  void initPlatformState() {
-    try {
-      _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
-      _pedestrianStatusStream
-          .listen(onPedestrianStatusChanged)
-          .onError(onPedestrianStatusError);
-
-      _stepCountStream = Pedometer.stepCountStream;
-      _stepCountStream.listen(onStepCount,
-          onError: onStepCountError, cancelOnError: true);
-    } catch (e) {
-      print(e);
-    }
-
-    if (!mounted) return;
   }
 
   @override
@@ -102,36 +64,33 @@ class _TestPageState extends State<TestPage> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterPage(),
-                    ),
-                  );
-                },
-                child: const Text('Ir para cadastro'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginPage(),
-                    ),
-                  );
-                },
-                child: const Text('Ir para login'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
                   openLoading(message: 'Sincronizando dados...');
                   Timer(const Duration(seconds: 3), () {
                     closeLoading();
                   });
                 },
                 child: const Text('Teste loading mensagem'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  _controller.reset();
+                },
+                child: const Text('Pausar gif'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  _controller.reset();
+                  _controller.forward();
+                  _controller.addStatusListener((status) {
+                    if (status == AnimationStatus.completed) {
+                      _controller.reset();
+                      _controller.forward();
+                    }
+                  });
+                },
+                child: const Text('Continuar gif'),
               ),
               Divider(
                 height: 50,
@@ -143,7 +102,7 @@ class _TestPageState extends State<TestPage> {
                 style: TextStyle(fontSize: 15),
               ),
               Text(
-                _steps,
+                _steps.toString(),
                 style: const TextStyle(fontSize: 30),
               ),
               const SizedBox(height: 20),
@@ -152,20 +111,24 @@ class _TestPageState extends State<TestPage> {
                 style: TextStyle(fontSize: 15),
               ),
               Icon(
-                _status == 'walking'
+                _status == MovementStatus.walking
                     ? Icons.directions_walk
-                    : _status == 'stopped'
-                        ? Icons.accessibility_new
-                        : Icons.error,
+                    : Icons.accessibility_new,
                 size: 50,
               ),
               Center(
-                child: Text(
-                  _status,
-                  style: _status == 'walking' || _status == 'stopped'
-                      ? const TextStyle(fontSize: 30)
-                      : const TextStyle(fontSize: 10, color: Colors.red),
-                ),
+                child: Text(_status.name, style: const TextStyle(fontSize: 30)),
+              ),
+              Divider(
+                height: 50,
+                thickness: 1,
+                color: AppColors.primary,
+              ),
+              Gif(
+                image: const AssetImage('assets/images/running.gif'),
+                controller: _controller,
+                width: 20,
+                autostart: Autostart.no,
               ),
             ],
           ),

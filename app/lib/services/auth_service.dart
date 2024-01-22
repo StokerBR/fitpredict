@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fitpredict/global_variables.dart';
+import 'package:fitpredict/models/goal.dart';
+import 'package:fitpredict/models/stat.dart';
 import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/services/http_service.dart';
 import 'package:fitpredict/services/user_service.dart';
@@ -34,11 +36,14 @@ class AuthService {
           tokenBox.put('access_token', data['access_token']);
           tokenBox.put('refresh_token', data['refresh_token']);
 
-          Map<String, dynamic>? user = await UserService.getUser();
+          // Obtém os dados do usuário e salva
+          User? user = await UserService.getUser();
 
           closeLoading();
 
           if (user != null) {
+            loggedUser = user;
+
             return {
               'success': true,
               'user': user,
@@ -62,8 +67,6 @@ class AuthService {
               'error': 'Falha ao realizar login.',
             };
           } */
-        } else {
-          message = e.toString();
         }
 
         showError(message);
@@ -81,43 +84,12 @@ class AuthService {
     return null;
   }
 
-  // Salva o login usuário
-  static void saveUserLogin(String email, String password) {
-    var userLoginBox = Hive.box<String>('userLogin');
-
-    userLoginBox.put('email', email);
-    userLoginBox.put('password', password);
-  }
-
-  // Obtém o login do usuário
-  static Map<String, dynamic>? getUserLogin() {
-    var userLoginBox = Hive.box<String>('userLogin');
-
-    if (userLoginBox.isNotEmpty) {
-      return {
-        'email': userLoginBox.get('email'),
-        'password': userLoginBox.get('password'),
-      };
-    } else {
-      return null;
-    }
-  }
-
-  // Limpa o login do usuário
-  static void clearUserLogin() {
-    var userLoginBox = Hive.box<String>('userLogin');
-    userLoginBox.clear();
-  }
-
   // Remove o usuário do storage
   static void logout([bool clearUser = false, bool redirect = true]) {
-    Box tokenBox = Hive.box<String>('token');
-    Box userBox = Hive.box<User>('user');
-    tokenBox.clear();
-    userBox.clear();
-    if (clearUser) {
-      clearUserLogin();
-    }
+    Hive.box<User>('user').clear();
+    Hive.box<String>('token').clear();
+    Hive.box<Stat>('stats').clear();
+    Hive.box<Goal>('goals').clear();
   }
 
   // Redireciona para a pagina de login

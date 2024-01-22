@@ -1,0 +1,4 @@
+enum MovementStatus {
+  walking,
+  stopped,
+}

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 void openLoading({bool allowBack = false, String? message}) {
   loadingRoute = DialogRoute(
     context: navigatorKey.currentState!.context,
+    barrierColor: AppColors.blue[950]!.withOpacity(0.5),
     builder: (context) => WillPopScope(
       onWillPop: () async => allowBack,
       child: Center(

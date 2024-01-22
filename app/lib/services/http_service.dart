@@ -114,7 +114,8 @@ class HttpService {
       onTimeout: () {
         showError(
             'Erro de conexão com o servidor. Tente novamente mais tarde.');
-        return Future.error('Erro de conexão com o servidor.');
+        return Future.error(
+            'Erro de conexão com o servidor. Tente novamente mais tarde.');
       },
     );
   }

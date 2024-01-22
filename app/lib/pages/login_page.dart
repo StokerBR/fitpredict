@@ -1,9 +1,9 @@
-import 'package:fitpredict/pages/home_page.dart';
+import 'package:fitpredict/models/user.dart';
+import 'package:fitpredict/pages/main_page.dart';
 import 'package:fitpredict/services/auth_service.dart';
 import 'package:fitpredict/widgets/alert.dart';
 import 'package:fitpredict/widgets/input.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
@@ -25,12 +25,6 @@ class _LoginPageState extends State<LoginPage> {
   bool emailReadonly = false;
 
   void _handleLogin() async {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const HomePage(),
-      ),
-      (route) => false,
-    );
     if (_formKey.currentState!.validate()) {
       Map<String, dynamic>? result = await AuthService.login(
         _emailController.text,
@@ -39,16 +33,11 @@ class _LoginPageState extends State<LoginPage> {
 
       if (result != null) {
         if (result['success']) {
-          AuthService.saveUserLogin(
-            _emailController.text,
-            _passwordController.text,
-          );
-
           if (context.mounted) {
             if (widget.redirectHome) {
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
-                  builder: (context) => const HomePage(),
+                  builder: (context) => const MainPage(),
                 ),
                 (route) => false,
               );
@@ -71,9 +60,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    String? userEmail = Hive.box<String>('userLogin').get('email');
-    if (userEmail != null) {
-      _emailController.text = userEmail;
+    User? user = User.fromBox();
+    if (user != null) {
+      _emailController.text = user.email;
       emailReadonly = true;
     }
 

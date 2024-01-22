@@ -1,4 +1,6 @@
+import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/handlers/fitness_permission_handler.dart';
+import 'package:fitpredict/pages/goals/goals_page.dart';
 import 'package:fitpredict/pages/home_page.dart';
 import 'package:fitpredict/pages/profile_page.dart';
 import 'package:fitpredict/pages/test_page.dart';
@@ -20,6 +22,8 @@ class _MainPageState extends State<MainPage> {
     FitnessPermissionHandler.allowPermission(false).then((value) {
       if (!value) {
         FitnessPermissionHandler.showRequestPermissionDialog(context);
+      } else {
+        pedometerService.initialize();
       }
     });
 
@@ -35,18 +39,18 @@ class _MainPageState extends State<MainPage> {
               currentPageIndex = index;
             });
           },
-          indicatorColor: AppColors.blue[800],
+          indicatorColor: AppColors.primary,
           selectedIndex: currentPageIndex,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           indicatorShape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           destinations: const <Widget>[
-            NavigationDestination(
+            /* NavigationDestination(
               selectedIcon: Icon(Icons.code),
               icon: Icon(Icons.code_outlined),
               label: 'Teste',
-            ),
+            ), */
             NavigationDestination(
               selectedIcon: Icon(Icons.home),
               icon: Icon(Icons.home_outlined),
@@ -66,25 +70,18 @@ class _MainPageState extends State<MainPage> {
         ),
         body: IndexedStack(
           index: currentPageIndex,
-          children: <Widget>[
+          children: const <Widget>[
             // Teste
-            const TestPage(),
+            // TestPage(),
 
             // Home
-            const HomePage(),
+            HomePage(),
 
             // Metas
-            Scaffold(
-              appBar: AppBar(
-                title: const Text('Metas'),
-              ),
-              body: const Center(
-                child: Text('Metas'),
-              ),
-            ),
+            GoalsPage(),
 
             // Perfil
-            const ProfilePage(),
+            ProfilePage(),
           ],
         )
         /* body: <Widget>[

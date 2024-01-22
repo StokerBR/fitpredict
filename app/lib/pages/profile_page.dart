@@ -1,4 +1,5 @@
 import 'package:fitpredict/enums/gender_enum.dart';
+import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/services/auth_service.dart';
 import 'package:fitpredict/widgets/menu_bar.dart';
@@ -10,8 +11,6 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User? _user;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Perfil'),
@@ -24,9 +23,9 @@ class ProfilePage extends StatelessWidget {
             child: ValueListenableBuilder(
               valueListenable: Hive.box<User>('user').listenable(),
               builder: (context, value, child) {
-                _user = value.get('user');
+                User? user = value.get('user');
 
-                if (_user == null) {
+                if (user == null) {
                   return const Center(
                     child: Text('Usuário não encontrado'),
                   );
@@ -43,31 +42,31 @@ class ProfilePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Nome: ${_user!.name}',
+                      'Nome: ${user.name}',
                       style: const TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'E-mail: ${_user!.email}',
+                      'E-mail: ${user.email}',
                       style: const TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Sexo: ${GenderEnum.values.where((e) => e.value == _user!.gender).firstOrNull?.name ?? ''}',
+                      'Sexo: ${GenderEnum.values.where((e) => e.value == user.gender).firstOrNull?.name ?? ''}',
                       style: const TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Altura: ${_user!.height}cm',
+                      'Altura: ${user.height}cm',
                       style: const TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Peso: ${_user!.weight}kg',
+                      'Peso: ${user.weight}kg',
                       style: const TextStyle(
                         fontSize: 16,
                       ),
@@ -95,11 +94,11 @@ class ProfilePage extends StatelessWidget {
             action: () {
               // AuthService.logout();
               showDialog(
-                context: context,
+                context: navigatorKey.currentState!.overlay!.context,
                 builder: (context) => AlertDialog(
                   title: const Text('Sair do app'),
                   content: const Text(
-                    'Tem certeza que deseja sair do app? Todos os dados não sincronizados serão perdidos.',
+                    'Tem certeza que deseja deslogar do app? Todos os dados não sincronizados serão perdidos.',
                   ),
                   actions: [
                     TextButton(
@@ -111,7 +110,9 @@ class ProfilePage extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         AuthService.logout(true);
-                        Navigator.pop(context);
+                        Navigator.pop(
+                          navigatorKey.currentState!.overlay!.context,
+                        );
                       },
                       child: const Text('Sair'),
                     ),

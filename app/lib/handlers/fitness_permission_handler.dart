@@ -1,3 +1,4 @@
+import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/theme.dart';
 import 'package:fitpredict/widgets/dialog.dart';
 import 'package:flutter/material.dart';
@@ -93,6 +94,7 @@ class FitnessPermissionHandler {
             onPressed: () {
               allowPermission().then((value) {
                 if (value) {
+                  pedometerService.initialize();
                   Navigator.pop(context);
                 }
               });
