@@ -42,7 +42,7 @@ showAlert(String? type, String message, {Function()? onTap}) {
       color: color,
     ),
     onTap: (_) => onTap,
-  ).show(navigatorKey.currentContext!);
+  ).show(navigatorKey.currentState!.overlay!.context);
 }
 
 showSuccess(String message, {Function()? onTap}) {

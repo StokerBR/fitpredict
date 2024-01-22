@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:fitpredict/functions/get_now_date.dart';
+import 'package:fitpredict/widgets/alert.dart';
 import 'package:hive/hive.dart';
 
 part 'goal.g.dart';
@@ -97,5 +99,11 @@ class Goal {
   void delete() {
     var box = Hive.box<Goal>('goals');
     box.delete(key);
+  }
+
+  // Completa o goal
+  void complete() {
+    completedAt = getNowDate();
+    showSuccess('Parabéns, você completou a meta de $steps passos!');
   }
 }

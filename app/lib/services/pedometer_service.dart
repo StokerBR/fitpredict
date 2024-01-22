@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:fitpredict/calculator.dart';
 import 'package:fitpredict/enums/pedestrian_status.dart';
-import 'package:fitpredict/functions/get_now_date.dart';
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/goal.dart';
-import 'package:fitpredict/widgets/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -84,8 +82,7 @@ class PedometerService {
       }
 
       if (goal.completedAt == null && goal.stepsWalked == goal.steps) {
-        goal.completedAt = getNowDate();
-        showSuccess('Parabéns, você completou a meta de ${goal.steps} passos!');
+        goal.complete();
       }
 
       goal.saveToBox();

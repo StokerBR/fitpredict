@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/widgets/steps_card.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +15,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _stepsTotal = loggedUser!.totalSteps;
   int _stepsToday = currentStat!.steps;
 
+  void _updateSteps() {
+    setState(() {
+      _stepsTotal = loggedUser!.totalSteps;
+      _stepsToday = currentStat!.steps;
+    });
+  }
+
   @override
   void initState() {
+    // Atualiza os passos quando a contagem de passos é atualizada
     pedometerService.stepCount.addListener(() {
-      setState(() {
-        _stepsTotal = loggedUser!.totalSteps;
-        _stepsToday = currentStat!.steps;
-      });
+      _updateSteps();
+    });
+
+    // Também atualiza os passos uma vez depois 1 segundos para garantir que os dados foram carregados corretamente
+    Timer(const Duration(seconds: 1), () {
+      _updateSteps();
     });
 
     super.initState();

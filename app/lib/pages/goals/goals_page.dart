@@ -1,4 +1,5 @@
 import 'package:fitpredict/calculator.dart';
+import 'package:fitpredict/functions/convert_date.dart';
 import 'package:fitpredict/functions/get_calories_string.dart';
 import 'package:fitpredict/functions/get_distance_string.dart';
 import 'package:fitpredict/global_variables.dart';
@@ -80,7 +81,9 @@ class _GoalsPageState extends State<GoalsPage> {
 
   Widget getGoalCard(Goal goal) {
     double percentWalked = goal.stepsWalked / goal.steps;
-    // double percentWalked = 0.2;
+    if (percentWalked > 1) {
+      percentWalked = 1;
+    }
 
     return Card(
       margin: const EdgeInsets.only(bottom: 15),
@@ -131,7 +134,7 @@ class _GoalsPageState extends State<GoalsPage> {
                           color: AppColors.primary,
                           size: 18,
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 5),
                         Text(
                           goal.steps.toString(),
                           style: const TextStyle(
@@ -142,7 +145,7 @@ class _GoalsPageState extends State<GoalsPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Tooltip(
                     message: 'Distância',
                     child: Row(
@@ -152,7 +155,7 @@ class _GoalsPageState extends State<GoalsPage> {
                           color: Colors.green,
                           size: 18,
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 5),
                         Text(
                           getDistanceString(
                               calculator.stepsToDistance(goal.steps)),
@@ -164,7 +167,7 @@ class _GoalsPageState extends State<GoalsPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Tooltip(
                     message: 'Calorias',
                     child: Row(
@@ -174,7 +177,7 @@ class _GoalsPageState extends State<GoalsPage> {
                           color: Colors.orange,
                           size: 18,
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 5),
                         Text(
                           getCaloriesString(
                               calculator.stepsToCalories(goal.steps)),
@@ -186,6 +189,30 @@ class _GoalsPageState extends State<GoalsPage> {
                       ],
                     ),
                   ),
+                  if (goal.completedAt != null) ...[
+                    const SizedBox(height: 5),
+                    Tooltip(
+                      message: 'Completada em',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_month,
+                            color: AppColors.blue[600],
+                            size: 18,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            convertDate('yyyy-MM-dd HH:mm:ss',
+                                'dd/MM/yyyy HH:mm', goal.completedAt!),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]
                 ],
               ),
             ),
