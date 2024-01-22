@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:fitpredict/calculator.dart';
 import 'package:fitpredict/enums/pedestrian_status.dart';
-import 'package:fitpredict/functions/steps_to_calories.dart';
-import 'package:fitpredict/functions/steps_to_distance.dart';
+import 'package:fitpredict/functions/get_now_date.dart';
 import 'package:fitpredict/global_variables.dart';
+import 'package:fitpredict/models/goal.dart';
+import 'package:fitpredict/widgets/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:pedometer/pedometer.dart';
 
 class PedometerService {
@@ -15,6 +18,7 @@ class PedometerService {
       ValueNotifier<MovementStatus>(MovementStatus.stopped);
 
   Timer? _saveStepsTimer;
+  int _pendingSteps = 0;
 
   // Inicializa o serviço de contagem de passos
   void initialize() {
@@ -43,19 +47,51 @@ class PedometerService {
 
     if (addedSteps > 0) {
       _saveStepsTimer?.cancel();
+      _pendingSteps += addedSteps;
 
-      // Salva os passos no Hive após 3 segundos (para evitar muitas gravações)
-      _saveStepsTimer = Timer(const Duration(seconds: 3), () {
-        // Atualiza o usuário no Hive
-        loggedUser!.saveToBox();
-
-        // Atualiza o stat no Hive
-        currentStat!.calories = stepsToCalories(steps).round();
-        currentStat!.distance =
-            stepsToDistance(steps, loggedUser!.height).round();
-        currentStat!.saveToBox();
-      });
+      // Salva os passos a cada 20 passos ou 3 segundos (para evitar muitas gravações)
+      if (_pendingSteps >= 20) {
+        _saveSteps();
+      } else {
+        _saveStepsTimer = Timer(const Duration(seconds: 3), _saveSteps);
+      }
     }
+  }
+
+  // Salva os passos
+  void _saveSteps() {
+    // Atualiza o usuário no Hive
+    loggedUser!.saveToBox();
+
+    final calculator = Calculator(
+      heightCm: loggedUser!.height,
+      weightKg: loggedUser!.weight,
+    );
+
+    // Atualiza o stat no Hive
+    currentStat!.calories =
+        calculator.stepsToCalories(currentStat!.steps).round();
+    currentStat!.distance =
+        calculator.stepsToDistance(currentStat!.steps).round();
+    currentStat!.saveToBox();
+
+    // Atualiza as metas
+    Hive.box<Goal>('goals').values.forEach((goal) {
+      if (_pendingSteps + goal.stepsWalked > goal.steps) {
+        goal.stepsWalked = goal.steps;
+      } else {
+        goal.stepsWalked += _pendingSteps;
+      }
+
+      if (goal.completedAt == null && goal.stepsWalked == goal.steps) {
+        goal.completedAt = getNowDate();
+        showSuccess('Parabéns, você completou a meta de ${goal.steps} passos!');
+      }
+
+      goal.saveToBox();
+    });
+
+    _pendingSteps = 0;
   }
 
   // Caso o dispositivo não suporte a contagem de passos

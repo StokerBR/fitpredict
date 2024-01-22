@@ -1,14 +1,13 @@
+import 'package:fitpredict/calculator.dart';
 import 'package:fitpredict/functions/get_calories_string.dart';
 import 'package:fitpredict/functions/get_distance_string.dart';
-import 'package:fitpredict/functions/steps_to_calories.dart';
-import 'package:fitpredict/functions/steps_to_distance.dart';
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/theme.dart';
 import 'package:fitpredict/widgets/running_icon.dart';
 import 'package:flutter/material.dart';
 
 class StepsCard extends StatelessWidget {
-  const StepsCard({
+  StepsCard({
     super.key,
     required this.title,
     required this.steps,
@@ -17,16 +16,26 @@ class StepsCard extends StatelessWidget {
   final String title;
   final int steps;
 
+  final calculator = Calculator(
+    heightCm: loggedUser!.height,
+    weightKg: loggedUser!.weight,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: AppColors.primary,
-          width: 1,
-        ),
         color: AppColors.primary.withOpacity(0.05),
+        /* color:
+            Color.alphaBlend(AppColors.primary.withOpacity(0.05), Colors.white),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ], */
       ),
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -78,8 +87,7 @@ class StepsCard extends StatelessWidget {
                       const SizedBox(width: 10),
                       Text(
                         // '${(stepsToDistance(_stepsTotal, loggedUser!.height) / 1000).toStringAsFixed(2)} km',
-                        getDistanceString(
-                            stepsToDistance(steps, loggedUser!.height)),
+                        getDistanceString(calculator.stepsToDistance(steps)),
                         style: const TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16,
@@ -99,7 +107,7 @@ class StepsCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        getCaloriesString(stepsToCalories(steps)),
+                        getCaloriesString(calculator.stepsToCalories(steps)),
                         style: const TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16,

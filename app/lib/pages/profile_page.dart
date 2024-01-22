@@ -11,8 +11,6 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User? _user;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Perfil'),
@@ -25,9 +23,9 @@ class ProfilePage extends StatelessWidget {
             child: ValueListenableBuilder(
               valueListenable: Hive.box<User>('user').listenable(),
               builder: (context, value, child) {
-                _user = value.get('user');
+                User? user = value.get('user');
 
-                if (_user == null) {
+                if (user == null) {
                   return const Center(
                     child: Text('Usuário não encontrado'),
                   );
@@ -44,31 +42,31 @@ class ProfilePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Nome: ${_user!.name}',
+                      'Nome: ${user.name}',
                       style: const TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'E-mail: ${_user!.email}',
+                      'E-mail: ${user.email}',
                       style: const TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Sexo: ${GenderEnum.values.where((e) => e.value == _user!.gender).firstOrNull?.name ?? ''}',
+                      'Sexo: ${GenderEnum.values.where((e) => e.value == user.gender).firstOrNull?.name ?? ''}',
                       style: const TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Altura: ${_user!.height}cm',
+                      'Altura: ${user.height}cm',
                       style: const TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Peso: ${_user!.weight}kg',
+                      'Peso: ${user.weight}kg',
                       style: const TextStyle(
                         fontSize: 16,
                       ),

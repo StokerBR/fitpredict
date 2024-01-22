@@ -159,7 +159,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           CustomInput(
                             controller: _emailController,
                             labelText: 'E-mail',
-                            counterText: '',
                             maxLength: 70,
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {

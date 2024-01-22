@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/theme.dart';
 
-showAlert(String? type, String message) {
+showAlert(String? type, String message, {Function()? onTap}) {
   if (message == '{message: Unauthenticated.}') {
     message = 'Login expirado!';
   }
@@ -41,13 +41,14 @@ showAlert(String? type, String message) {
       icon,
       color: color,
     ),
+    onTap: (_) => onTap,
   ).show(navigatorKey.currentContext!);
 }
 
-showSuccess(String message) {
-  showAlert('success', message);
+showSuccess(String message, {Function()? onTap}) {
+  showAlert('success', message, onTap: onTap);
 }
 
-showError(String message) {
-  showAlert('error', message);
+showError(String message, {Function()? onTap}) {
+  showAlert('error', message, onTap: onTap);
 }

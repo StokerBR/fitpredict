@@ -37,7 +37,6 @@ class UserForm {
           CustomInput(
             controller: nameController,
             labelText: 'Nome',
-            counterText: '',
             textCapitalization: TextCapitalization.words,
             maxLength: 50,
             validator: (value) {

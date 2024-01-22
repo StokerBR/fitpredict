@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:fitpredict/functions/get_today_date.dart';
 import 'package:hive/hive.dart';
+
 part 'stat.g.dart';
 // dart run build_runner build
 

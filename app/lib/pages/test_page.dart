@@ -2,14 +2,11 @@ import 'dart:async';
 
 import 'package:fitpredict/enums/pedestrian_status.dart';
 import 'package:fitpredict/global_variables.dart';
-import 'package:fitpredict/pages/login_page.dart';
-import 'package:fitpredict/pages/register_page.dart';
 import 'package:fitpredict/pages/welcome_page.dart';
 import 'package:fitpredict/theme.dart';
 import 'package:fitpredict/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:gif/gif.dart';
-import 'package:pedometer/pedometer.dart';
 
 class TestPage extends StatefulWidget {
   const TestPage({super.key});

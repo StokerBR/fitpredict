@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fitpredict/functions/get_today_date.dart';
 import 'package:fitpredict/global_variables.dart';
+import 'package:fitpredict/models/goal.dart';
 import 'package:fitpredict/models/stat.dart';
 import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/pages/main_page.dart';
@@ -21,9 +22,11 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(StatAdapter());
+  Hive.registerAdapter(GoalAdapter());
   await Hive.openBox<User>('user');
   await Hive.openBox<String>('token');
   await Hive.openBox<Stat>('stats');
+  await Hive.openBox<Goal>('goals');
 
   // Obtém o stat do dia atual
   currentStat = Stat.getTodayStat();

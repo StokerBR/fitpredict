@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:hive/hive.dart';
+
 part 'user.g.dart';
 // dart run build_runner build
 
