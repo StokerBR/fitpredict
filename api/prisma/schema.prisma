@@ -38,9 +38,12 @@ model Goal {
   id          Int      @default(autoincrement()) @id
   userId      Int
   user        User     @relation(fields: [userId], references: [id])
-  distance    Int // Metros
   steps       Int
+  distance    Int // Metros
   calories    Int
+  stepsWalked Int      @default(0)
+  lastSync    DateTime @default(now())
+  completedAt DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
   
@@ -51,10 +54,13 @@ model Stat {
   id          Int      @default(autoincrement()) @id
   userId      Int
   user        User     @relation(fields: [userId], references: [id])
-  distance    Int // Metros
+  date        DateTime @db.Date @unique
   steps       Int
+  distance    Int // Metros
   calories    Int
+  lastSync    DateTime @default(now())
   createdAt   DateTime @default(now())
+  
   
   @@map("stats")
 }

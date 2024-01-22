@@ -55,11 +55,11 @@ export class AuthService {
   private generateToken(payload: JwtUserPayload) {
     return {
       access_token: this.jwtService.sign(payload, {
-        expiresIn: '1d',
+        expiresIn: '7d',
         secret: jwtConstants.secret,
       }),
       refresh_token: this.jwtService.sign(payload, {
-        expiresIn: '7d',
+        expiresIn: '30d',
         secret: jwtConstants.secretRefresh,
       }),
     };
