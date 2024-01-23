@@ -8,7 +8,8 @@ export class SyncService {
 
   /**
    * Sincroniza os dados com o app
+   * @param req
    * @param SyncDto
    */
-  async sync(syncUserDto: SyncDto) {}
+  async sync(req: any, syncDto: SyncDto) {}
 }

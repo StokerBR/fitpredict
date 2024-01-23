@@ -1,16 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Gender } from '@prisma/client';
-import {
-  IsString,
-  IsNotEmpty,
-  IsEmail,
-  MinLength,
-  MaxLength,
-  IsNumber,
-  Min,
-  Max,
-  IsEnum,
-} from 'class-validator';
+import { IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator';
 import { UserDto } from './user.dto';
 
 export class RegisterUserDto extends UserDto {

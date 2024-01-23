@@ -7,4 +7,4 @@ import { SyncController } from './sync.controller';
   providers: [SyncService],
   exports: [SyncService],
 })
-export class UserModule {}
+export class SyncModule {}
