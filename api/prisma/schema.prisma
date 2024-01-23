@@ -54,13 +54,13 @@ model Stat {
   id          Int      @default(autoincrement()) @id
   userId      Int
   user        User     @relation(fields: [userId], references: [id])
-  date        DateTime @db.Date @unique
+  date        DateTime @db.Date
   steps       Int
   distance    Int // Metros
   calories    Int
   lastSync    DateTime @default(now())
   createdAt   DateTime @default(now())
   
-  
+  @@unique([userId, date])
   @@map("stats")
 }
