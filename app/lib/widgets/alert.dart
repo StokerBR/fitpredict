@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/theme.dart';
 
-showAlert(String? type, String message, {Function()? onTap}) {
+showAlert(String message, {String? type, Function()? onTap}) {
   if (message == '{message: Unauthenticated.}') {
     message = 'Login expirado!';
   }
@@ -46,9 +46,9 @@ showAlert(String? type, String message, {Function()? onTap}) {
 }
 
 showSuccess(String message, {Function()? onTap}) {
-  showAlert('success', message, onTap: onTap);
+  showAlert(message, type: 'success', onTap: onTap);
 }
 
 showError(String message, {Function()? onTap}) {
-  showAlert('error', message, onTap: onTap);
+  showAlert(message, type: 'error', onTap: onTap);
 }

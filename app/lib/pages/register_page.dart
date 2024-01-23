@@ -160,6 +160,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             controller: _emailController,
                             labelText: 'E-mail',
                             maxLength: 70,
+                            textCapitalization: TextCapitalization.none,
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
