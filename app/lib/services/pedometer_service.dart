@@ -74,14 +74,17 @@ class PedometerService {
     currentStat!.saveToBox();
 
     // Atualiza as metas
-    Hive.box<Goal>('goals').values.forEach((goal) {
+    Hive.box<Goal>('goals')
+        .values
+        .where((e) => e.completedAt == null)
+        .forEach((goal) {
       if (_pendingSteps + goal.stepsWalked > goal.steps) {
         goal.stepsWalked = goal.steps;
       } else {
         goal.stepsWalked += _pendingSteps;
       }
 
-      if (goal.completedAt == null && goal.stepsWalked == goal.steps) {
+      if (goal.stepsWalked == goal.steps) {
         goal.complete();
       }
 

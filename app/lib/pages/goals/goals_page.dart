@@ -52,7 +52,7 @@ class _GoalsPageState extends State<GoalsPage> {
                   return Column(
                     children: [
                       const SizedBox(height: 20),
-                      ...goals
+                      ...goals.reversed
                           .map(
                             (goal) => getGoalCard(goal),
                           )
@@ -87,12 +87,12 @@ class _GoalsPageState extends State<GoalsPage> {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 15),
-      color: goal.completedAt != null
+      /* color: goal.completedAt != null
           ? Color.alphaBlend(
               Colors.green.withOpacity(0.2),
               Colors.white,
             )
-          : null,
+          : null, */
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Row(
@@ -196,11 +196,11 @@ class _GoalsPageState extends State<GoalsPage> {
                       child: Row(
                         children: [
                           Icon(
-                            Icons.calendar_month,
+                            Icons.check_box,
                             color: AppColors.blue[600],
                             size: 18,
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: 5),
                           Text(
                             convertDate('yyyy-MM-dd HH:mm:ss',
                                 'dd/MM/yyyy HH:mm', goal.completedAt!),
