@@ -77,7 +77,7 @@ export class UserController {
   // Obter os dados do usuário logado
   @Get('')
   @UseGuards(JwtUserAuthGuard)
-  @ApiBearerAuth('User access-token')
+  @ApiBearerAuth('access-token')
   @ApiOkResponse({
     // Documentação da resposta pro swagger
     description: 'Dados do usuário obtidos com sucesso',
@@ -101,7 +101,7 @@ export class UserController {
   // Editar dados do usuário
   @Put('')
   @UseGuards(JwtUserAuthGuard)
-  @ApiBearerAuth('User access-token')
+  @ApiBearerAuth('access-token')
   @ApiOkResponse({
     // Documentação da resposta pro swagger
     description: 'Dados atualizados com sucesso',

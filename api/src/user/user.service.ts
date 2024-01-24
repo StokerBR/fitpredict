@@ -67,8 +67,8 @@ export class UserService {
         gender: true,
         height: true,
         weight: true,
-        stats: true,
         totalSteps: true,
+        lastSync: true,
       },
     });
   }
@@ -84,7 +84,7 @@ export class UserService {
       // Atualiza os dados da avaliação
       await this.prisma.user.update({
         where: { id: user.id },
-        data: updateUserDto,
+        data: { ...updateUserDto, lastSync: new Date() },
       });
       return { message: 'Usuário atualizado com sucesso.' };
     } catch (error) {

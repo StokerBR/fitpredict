@@ -13,7 +13,7 @@ export class SyncController {
   // Sincroniza os dados com o app
   @Post('')
   @UseGuards(JwtUserAuthGuard)
-  @ApiBearerAuth('User access-token')
+  @ApiBearerAuth('access-token')
   @ApiOkResponse({
     // Documentação da resposta pro swagger
     description: 'Dados sincronizados com sucesso',
