@@ -1,0 +1,31 @@
+{
+  "user": {
+    "name": "João da Silva",
+    "email": "joaodasilva@gmail.com",
+    "gender": "M",
+    "height": 180,
+    "weight": 80,
+    "totalSteps": 10000,
+    "lastSync": "2024-01-22 12:30:00"
+  },
+  "goals": [
+    {
+      "id": 1,
+      "steps": 1000,
+      "distance": 750,
+      "calories": 50,
+      "stepsWalked": 500,
+      "lastSync": "2024-01-22 12:30:00",
+      "completedAt": "2024-01-22 12:30:00"
+    }
+  ],
+  "stats": [
+    {
+      "date": "2024-01-22",
+      "steps": 1000,
+      "distance": 750,
+      "calories": 50,
+      "lastSync": "2024-01-22 12:30:00"
+    }
+  ]
+}

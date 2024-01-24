@@ -8,7 +8,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { RegisterUserDto, UpdateUserDto } from './dto';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -18,6 +17,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtUserAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RegisterUserDto } from './dto/register-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('Users')
 @Controller('user')
@@ -76,7 +77,7 @@ export class UserController {
   // Obter os dados do usuário logado
   @Get('')
   @UseGuards(JwtUserAuthGuard)
-  @ApiBearerAuth('User access-token')
+  @ApiBearerAuth('access-token')
   @ApiOkResponse({
     // Documentação da resposta pro swagger
     description: 'Dados do usuário obtidos com sucesso',
@@ -100,7 +101,7 @@ export class UserController {
   // Editar dados do usuário
   @Put('')
   @UseGuards(JwtUserAuthGuard)
-  @ApiBearerAuth('User access-token')
+  @ApiBearerAuth('access-token')
   @ApiOkResponse({
     // Documentação da resposta pro swagger
     description: 'Dados atualizados com sucesso',

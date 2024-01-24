@@ -1,8 +1,9 @@
 import * as bcrypt from 'bcrypt';
-import { RegisterUserDto, UpdateUserDto } from './dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
+import { RegisterUserDto } from './dto/register-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -66,8 +67,8 @@ export class UserService {
         gender: true,
         height: true,
         weight: true,
-        stats: true,
         totalSteps: true,
+        lastSync: true,
       },
     });
   }
@@ -83,7 +84,7 @@ export class UserService {
       // Atualiza os dados da avaliação
       await this.prisma.user.update({
         where: { id: user.id },
-        data: updateUserDto,
+        data: { ...updateUserDto, lastSync: new Date() },
       });
       return { message: 'Usuário atualizado com sucesso.' };
     } catch (error) {

@@ -18,7 +18,7 @@ export async function userSeeder(prisma: PrismaClient, qty = 10) {
     weight: faker.number.int({ min: 50, max: 150 }),
   });
 
-  console.log('Executando seeders de usuários');
+  console.log('Executando seeder de usuários');
 
   // Cadastrar o usuário padrão
   await prisma.user.create({

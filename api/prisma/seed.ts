@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { userSeeder } from './seeders/index';
+import { statSeeder } from './seeders/stat-seeder';
+import { goalSeeder } from './seeders/goal-seeder';
 
 const prisma = new PrismaClient();
 
@@ -16,7 +18,9 @@ async function main() {
   }
 
   // Executar os seeders
-  await userSeeder(prisma, 10);
+  await userSeeder(prisma, 5);
+  await statSeeder(prisma, 30);
+  await goalSeeder(prisma, 20);
 
   console.log('Seeders finalizados');
 }
