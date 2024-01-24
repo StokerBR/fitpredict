@@ -6,6 +6,7 @@ import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/goal.dart';
 import 'package:fitpredict/pages/goals/goal_form_page.dart';
 import 'package:fitpredict/theme.dart';
+import 'package:fitpredict/widgets/sync_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -28,6 +29,7 @@ class _GoalsPageState extends State<GoalsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Metas'),
+        actions: const [SyncButton()],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -38,7 +40,14 @@ class _GoalsPageState extends State<GoalsPage> {
               child: ValueListenableBuilder(
                 valueListenable: Hive.box<Goal>('goals').listenable(),
                 builder: (context, value, child) {
-                  List<Goal> goals = value.values.toList().cast<Goal>();
+                  List<Goal> goals = value.values
+                      .where(
+                        (g) {
+                          return g.deleted == false;
+                        },
+                      )
+                      .toList()
+                      .cast<Goal>();
 
                   if (goals.isEmpty) {
                     return const Center(
@@ -238,7 +247,6 @@ class _GoalsPageState extends State<GoalsPage> {
                   iconSize: 15,
                   color: Colors.grey.withOpacity(0.8),
                   onPressed: () {
-                    // goal.delete();
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(

@@ -76,7 +76,7 @@ class PedometerService {
     // Atualiza as metas
     Hive.box<Goal>('goals')
         .values
-        .where((e) => e.completedAt == null)
+        .where((e) => e.completedAt == null && e.deleted == false)
         .forEach((goal) {
       if (_pendingSteps + goal.stepsWalked > goal.steps) {
         goal.stepsWalked = goal.steps;

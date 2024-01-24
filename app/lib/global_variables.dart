@@ -11,3 +11,5 @@ User? loggedUser;
 Stat? currentStat;
 
 PedometerService pedometerService = PedometerService();
+
+ValueNotifier<bool> isSyncing = ValueNotifier<bool>(false);

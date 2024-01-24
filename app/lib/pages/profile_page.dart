@@ -3,6 +3,7 @@ import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/services/auth_service.dart';
 import 'package:fitpredict/widgets/menu_bar.dart';
+import 'package:fitpredict/widgets/sync_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -14,6 +15,7 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Perfil'),
+        actions: const [SyncButton()],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

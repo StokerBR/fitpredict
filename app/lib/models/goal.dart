@@ -18,6 +18,7 @@ class Goal {
     this.stepsWalked = 0,
     this.lastSync,
     this.completedAt,
+    this.deleted = false,
   }) : super() {
     // Se a key não for informada, assume o valor do id ou gera um uuid
     key ??= id?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString();
@@ -46,6 +47,9 @@ class Goal {
 
   @HiveField(7)
   String? completedAt;
+
+  @HiveField(8)
+  bool deleted;
 
   // Retorna o goal a partir de um Map
   factory Goal.fromMap(Map<String, dynamic> map) {
@@ -95,10 +99,16 @@ class Goal {
   // Retorna um JSON com os dados do goal
   String toJson() => json.encode(toMap());
 
-  // Deleta o goal do Hive
+  // Deleta o goal
   void delete() {
-    var box = Hive.box<Goal>('goals');
-    box.delete(key);
+    // Se o goal existe na API, apenas marca como deletado, senão deleta do Hive
+    if (id != null) {
+      deleted = true;
+      saveToBox();
+    } else {
+      var box = Hive.box<Goal>('goals');
+      box.delete(key);
+    }
   }
 
   // Completa o goal
