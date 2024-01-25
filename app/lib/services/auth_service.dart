@@ -3,6 +3,7 @@ import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/goal.dart';
 import 'package:fitpredict/models/stat.dart';
 import 'package:fitpredict/models/user.dart';
+import 'package:fitpredict/pages/welcome_page.dart';
 import 'package:fitpredict/services/http_service.dart';
 import 'package:fitpredict/services/user_service.dart';
 import 'package:fitpredict/widgets/alert.dart';
@@ -85,25 +86,22 @@ class AuthService {
   }
 
   // Remove o usuário do storage
-  static void logout([bool clearUser = false, bool redirect = true]) {
+  static void logout([bool redirect = true]) {
+    if (redirect) {
+      Navigator.pushAndRemoveUntil(
+        navigatorKey.currentContext!,
+        MaterialPageRoute(builder: (context) => const WelcomePage()),
+        (route) => false,
+      );
+    }
+
     Hive.box<User>('user').clear();
     Hive.box<String>('token').clear();
     Hive.box<Stat>('stats').clear();
     Hive.box<Goal>('goals').clear();
-  }
 
-  // Redireciona para a pagina de login
-  static void redirectLogin() {
-    BuildContext? context = navigatorKey.currentContext;
-    if (context != null) {
-      // Adiciona a pagina de login na stack
-      /* Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginPage(),
-        ),
-      ); */
-    }
+    loggedUser = null;
+    currentStat = null;
   }
 
   // Atualiza o token

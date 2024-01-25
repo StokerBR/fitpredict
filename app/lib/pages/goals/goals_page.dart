@@ -1,10 +1,12 @@
 import 'package:fitpredict/calculator.dart';
+import 'package:fitpredict/functions/convert_date.dart';
 import 'package:fitpredict/functions/get_calories_string.dart';
 import 'package:fitpredict/functions/get_distance_string.dart';
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/goal.dart';
 import 'package:fitpredict/pages/goals/goal_form_page.dart';
 import 'package:fitpredict/theme.dart';
+import 'package:fitpredict/widgets/sync_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -27,6 +29,7 @@ class _GoalsPageState extends State<GoalsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Metas'),
+        actions: const [SyncButton()],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -37,7 +40,14 @@ class _GoalsPageState extends State<GoalsPage> {
               child: ValueListenableBuilder(
                 valueListenable: Hive.box<Goal>('goals').listenable(),
                 builder: (context, value, child) {
-                  List<Goal> goals = value.values.toList().cast<Goal>();
+                  List<Goal> goals = value.values
+                      .where(
+                        (g) {
+                          return g.deleted == false;
+                        },
+                      )
+                      .toList()
+                      .cast<Goal>();
 
                   if (goals.isEmpty) {
                     return const Center(
@@ -51,7 +61,7 @@ class _GoalsPageState extends State<GoalsPage> {
                   return Column(
                     children: [
                       const SizedBox(height: 20),
-                      ...goals
+                      ...goals.reversed
                           .map(
                             (goal) => getGoalCard(goal),
                           )
@@ -80,16 +90,18 @@ class _GoalsPageState extends State<GoalsPage> {
 
   Widget getGoalCard(Goal goal) {
     double percentWalked = goal.stepsWalked / goal.steps;
-    // double percentWalked = 0.2;
+    if (percentWalked > 1) {
+      percentWalked = 1;
+    }
 
     return Card(
       margin: const EdgeInsets.only(bottom: 15),
-      color: goal.completedAt != null
+      /* color: goal.completedAt != null
           ? Color.alphaBlend(
               Colors.green.withOpacity(0.2),
               Colors.white,
             )
-          : null,
+          : null, */
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Row(
@@ -131,7 +143,7 @@ class _GoalsPageState extends State<GoalsPage> {
                           color: AppColors.primary,
                           size: 18,
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 5),
                         Text(
                           goal.steps.toString(),
                           style: const TextStyle(
@@ -142,7 +154,7 @@ class _GoalsPageState extends State<GoalsPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Tooltip(
                     message: 'Distância',
                     child: Row(
@@ -152,7 +164,7 @@ class _GoalsPageState extends State<GoalsPage> {
                           color: Colors.green,
                           size: 18,
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 5),
                         Text(
                           getDistanceString(
                               calculator.stepsToDistance(goal.steps)),
@@ -164,7 +176,7 @@ class _GoalsPageState extends State<GoalsPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Tooltip(
                     message: 'Calorias',
                     child: Row(
@@ -174,7 +186,7 @@ class _GoalsPageState extends State<GoalsPage> {
                           color: Colors.orange,
                           size: 18,
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 5),
                         Text(
                           getCaloriesString(
                               calculator.stepsToCalories(goal.steps)),
@@ -186,6 +198,30 @@ class _GoalsPageState extends State<GoalsPage> {
                       ],
                     ),
                   ),
+                  if (goal.completedAt != null) ...[
+                    const SizedBox(height: 5),
+                    Tooltip(
+                      message: 'Completada em',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.check_box,
+                            color: AppColors.blue[600],
+                            size: 18,
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            convertDate('yyyy-MM-dd HH:mm:ss',
+                                'dd/MM/yyyy HH:mm', goal.completedAt!),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]
                 ],
               ),
             ),
@@ -211,7 +247,6 @@ class _GoalsPageState extends State<GoalsPage> {
                   iconSize: 15,
                   color: Colors.grey.withOpacity(0.8),
                   onPressed: () {
-                    // goal.delete();
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
