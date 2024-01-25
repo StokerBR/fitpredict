@@ -30,11 +30,37 @@ class SyncService {
         isSyncing.value = false;
       });
 
-      /* var res = await HttpService.post('sync', payload);
+      var res = await HttpService.post('sync', payload);
 
       if (res.statusCode == 200 || res.statusCode == 201) {
         closeLoading();
-      } */
+
+        Map<String, dynamic> data = res.data;
+
+        if (data['user'] != null &&
+            data['stats'] != null &&
+            data['goals'] != null) {
+          // Limpar dados locais
+          Hive.box<Goal>('goals').clear();
+          Hive.box<Stat>('stats').clear();
+
+          // Atualizar usuário
+          loggedUser = User.fromMap(data['user']);
+          loggedUser!.saveToBox();
+
+          // Salvar estatísticas
+          for (Map<String, dynamic> stat in data['stats']) {
+            Stat statObj = Stat.fromMap(stat);
+            statObj.saveToBox();
+          }
+
+          // Salvar metas
+          for (Map<String, dynamic> goal in data['goals']) {
+            Goal goalObj = Goal.fromMap(goal);
+            goalObj.saveToBox();
+          }
+        }
+      }
     } catch (e) {
       closeLoading();
       runErrorCatch(e,
