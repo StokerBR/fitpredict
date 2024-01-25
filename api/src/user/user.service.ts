@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { dateToString } from 'src/util/functions';
 
 @Injectable()
 export class UserService {
@@ -54,11 +55,12 @@ export class UserService {
    * @param id number
    * @returns object
    */
-  getUser(req: any) {
-    const user: User = req.user;
-    return this.prisma.user.findUnique({
+  async getUser(req: any) {
+    const requestUser: User = req.user;
+
+    const user = await this.prisma.user.findUnique({
       where: {
-        id: user.id,
+        id: requestUser.id,
       },
       select: {
         id: true,
@@ -69,6 +71,23 @@ export class UserService {
         weight: true,
         totalSteps: true,
         lastSync: true,
+      },
+    });
+
+    return { ...user, lastSync: dateToString(user.lastSync, true) };
+  }
+
+  /**
+   * Obter os dados de um usuário pelo ID
+   * @param id number
+   * @returns object
+   */
+  getUserInternal(req: any) {
+    const requestUser: User = req.user;
+
+    return this.prisma.user.findUnique({
+      where: {
+        id: requestUser.id,
       },
     });
   }

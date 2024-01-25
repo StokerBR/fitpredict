@@ -27,6 +27,7 @@ export class AuthService {
    */
   async validateUser(
     userId: number,
+    isInternal = false,
   ): Promise<
     Omit<
       User,
@@ -40,7 +41,10 @@ export class AuthService {
       | 'updatedAt'
     >
   > {
-    const user = await this.userService.getUser({ user: { id: userId } });
+    let userData = { user: { id: userId } };
+    const user = isInternal
+      ? await this.userService.getUserInternal(userData)
+      : await this.userService.getUser(userData);
     if (user) {
       return user;
     }
