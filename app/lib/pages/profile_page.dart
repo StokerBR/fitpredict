@@ -111,10 +111,10 @@ class ProfilePage extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        AuthService.logout(true);
                         Navigator.pop(
                           navigatorKey.currentState!.overlay!.context,
                         );
+                        AuthService.logout(true);
                       },
                       child: const Text('Sair'),
                     ),

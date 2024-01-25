@@ -1,5 +1,6 @@
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/handlers/fitness_permission_handler.dart';
+import 'package:fitpredict/models/stat.dart';
 import 'package:fitpredict/pages/goals/goals_page.dart';
 import 'package:fitpredict/pages/home_page.dart';
 import 'package:fitpredict/pages/profile_page.dart';
@@ -18,6 +19,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
+    currentStat = Stat.getTodayStat();
+
     FitnessPermissionHandler.allowPermission(false).then((value) {
       if (!value) {
         FitnessPermissionHandler.showRequestPermissionDialog(context);

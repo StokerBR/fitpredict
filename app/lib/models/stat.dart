@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fitpredict/functions/get_now_date.dart';
 import 'package:fitpredict/functions/get_today_date.dart';
 import 'package:hive/hive.dart';
 
@@ -55,6 +56,8 @@ class Stat {
 
   // Salva o stat no Hive
   void saveToBox() {
+    lastSync = getNowDate();
+
     var box = Hive.box<Stat>('stats');
     box.put(date, this);
   }

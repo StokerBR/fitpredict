@@ -15,7 +15,7 @@ class SyncService {
     openLoading(message: 'Sincronizando dados...');
 
     Map<String, dynamic> payload = {
-      'user': User.fromBox()!.toMap(),
+      'user': User.fromBox()?.toMap(),
       'goals': Hive.box<Goal>('goals').values.toList().map((goal) {
         return goal.toMap();
       }).toList(),
@@ -25,11 +25,6 @@ class SyncService {
     };
 
     try {
-      Timer(Duration(seconds: 2), () {
-        closeLoading();
-        isSyncing.value = false;
-      });
-
       var res = await HttpService.post('sync', payload);
 
       if (res.statusCode == 200 || res.statusCode == 201) {
@@ -41,8 +36,8 @@ class SyncService {
             data['stats'] != null &&
             data['goals'] != null) {
           // Limpar dados locais
-          Hive.box<Goal>('goals').clear();
-          Hive.box<Stat>('stats').clear();
+          await Hive.box<Goal>('goals').clear();
+          await Hive.box<Stat>('stats').clear();
 
           // Atualizar usuário
           loggedUser = User.fromMap(data['user']);
@@ -53,6 +48,7 @@ class SyncService {
             Stat statObj = Stat.fromMap(stat);
             statObj.saveToBox();
           }
+          currentStat = Stat.getTodayStat();
 
           // Salvar metas
           for (Map<String, dynamic> goal in data['goals']) {
@@ -66,5 +62,7 @@ class SyncService {
       runErrorCatch(e,
           'Não foi possível sincronizar os dados. Tente novamente mais tarde.');
     }
+
+    isSyncing.value = false;
   }
 }

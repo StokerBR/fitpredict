@@ -21,7 +21,7 @@ class Goal {
     this.deleted = false,
   }) : super() {
     // Se a key não for informada, assume o valor do id ou gera um uuid
-    key ??= id?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString();
+    key ??= DateTime.now().microsecondsSinceEpoch.toString();
   }
 
   @HiveField(0)
@@ -78,6 +78,8 @@ class Goal {
 
   // Salva o goal no Hive
   void saveToBox() {
+    lastSync = getNowDate();
+
     var box = Hive.box<Goal>('goals');
     box.put(key, this);
   }
@@ -93,6 +95,7 @@ class Goal {
       'stepsWalked': stepsWalked,
       'lastSync': lastSync,
       'completedAt': completedAt,
+      'deleted': deleted,
     };
   }
 

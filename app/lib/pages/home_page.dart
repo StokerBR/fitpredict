@@ -17,10 +17,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _stepsToday = currentStat!.steps;
 
   void _updateSteps() {
-    setState(() {
-      _stepsTotal = loggedUser!.totalSteps;
-      _stepsToday = currentStat!.steps;
-    });
+    if (mounted) {
+      setState(() {
+        _stepsTotal = loggedUser!.totalSteps;
+        _stepsToday = currentStat!.steps;
+      });
+    }
   }
 
   @override

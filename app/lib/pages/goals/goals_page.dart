@@ -58,6 +58,8 @@ class _GoalsPageState extends State<GoalsPage> {
                     );
                   }
 
+                  var json = goals.map((goal) => goal.toMap()).toList();
+
                   return Column(
                     children: [
                       const SizedBox(height: 20),

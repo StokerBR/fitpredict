@@ -6,6 +6,7 @@ import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/pages/main_page.dart';
 import 'package:fitpredict/services/http_service.dart';
+import 'package:fitpredict/services/sync_service.dart';
 import 'package:fitpredict/widgets/alert.dart';
 import 'package:fitpredict/widgets/input.dart';
 import 'package:fitpredict/widgets/loading.dart';
@@ -64,6 +65,8 @@ class _RegisterPageState extends State<RegisterPage> {
             lastSync: getNowDate(),
           );
 
+          loggedUser!.saveToBox();
+
           if (context.mounted) {
             Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
@@ -73,7 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
             );
           }
 
-          // TODO: Executar sincronização de dados aqui
+          SyncService.sync();
 
           showSuccess('Cadastro realizado com sucesso!');
         }

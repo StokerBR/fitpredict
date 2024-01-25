@@ -33,7 +33,7 @@ void main() async {
 
   // Mudar currentStat quando mudar o dia
   Timer.periodic(const Duration(minutes: 1), (timer) async {
-    if (currentStat!.date != getTodayDate()) {
+    if (currentStat != null && currentStat!.date != getTodayDate()) {
       currentStat!.saveToBox();
       currentStat = Stat.getTodayStat();
     }
