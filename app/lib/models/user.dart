@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fitpredict/functions/get_now_date.dart';
 import 'package:hive/hive.dart';
 
 part 'user.g.dart';
@@ -68,6 +69,8 @@ class User {
 
   // Salva o usuário no Hive
   void saveToBox() {
+    lastSync = getNowDate();
+
     final userBox = Hive.box<User>('user');
     userBox.put('user', this);
   }

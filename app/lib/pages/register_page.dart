@@ -1,10 +1,12 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:fitpredict/forms/user_form.dart';
+import 'package:fitpredict/functions/get_now_date.dart';
 import 'package:fitpredict/functions/run_error_catch.dart';
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/pages/main_page.dart';
 import 'package:fitpredict/services/http_service.dart';
+import 'package:fitpredict/services/sync_service.dart';
 import 'package:fitpredict/widgets/alert.dart';
 import 'package:fitpredict/widgets/input.dart';
 import 'package:fitpredict/widgets/loading.dart';
@@ -27,8 +29,6 @@ class _RegisterPageState extends State<RegisterPage> {
       TextEditingController();
 
   bool autoValidate = false;
-
-  late User? _user;
 
   // Realiza o cadastro
   void _submit() async {
@@ -56,7 +56,16 @@ class _RegisterPageState extends State<RegisterPage> {
         if (res.statusCode == 200 || res.statusCode == 201) {
           closeLoading();
 
-          loggedUser = User.fromJson(res.data);
+          loggedUser = User(
+            name: _userForm.nameController.text,
+            email: _emailController.text,
+            gender: _userForm.genderValue!,
+            height: int.parse(_userForm.heightController.text),
+            weight: int.parse(_userForm.weightController.text),
+            lastSync: getNowDate(),
+          );
+
+          loggedUser!.saveToBox();
 
           if (context.mounted) {
             Navigator.of(context).pushAndRemoveUntil(
@@ -67,7 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
             );
           }
 
-          // TODO: Executar sincronização de dados aqui
+          SyncService.sync();
 
           showSuccess('Cadastro realizado com sucesso!');
         }
@@ -78,34 +87,12 @@ class _RegisterPageState extends State<RegisterPage> {
           'Erro ao realizar o cadastro. Tente novamente mais tarde.',
         );
       }
-
-      _user = User(
-        name: _userForm.nameController.text,
-        email: _emailController.text,
-        gender: _userForm.genderValue!,
-        height: int.parse(_userForm.heightController.text),
-        weight: int.parse(_userForm.weightController.text),
-      );
-
-      _user!.saveToBox();
     }
   }
 
   @override
   void initState() {
     _userForm = UserForm(setState: setState);
-
-    // Carrega os dados do usuário salvo
-    _user = User.fromBox();
-
-    // Preenche os campos do formulário com os dados do usuário
-    if (_user != null) {
-      _userForm.nameController.text = _user!.name;
-      _emailController.text = _user!.email;
-      _userForm.genderValue = _user!.gender;
-      _userForm.heightController.text = _user!.height.toString();
-      _userForm.weightController.text = _user!.weight.toString();
-    }
 
     super.initState();
   }
@@ -160,6 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             controller: _emailController,
                             labelText: 'E-mail',
                             maxLength: 70,
+                            textCapitalization: TextCapitalization.none,
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value == null || value.isEmpty) {

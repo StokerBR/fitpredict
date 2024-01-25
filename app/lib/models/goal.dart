@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:fitpredict/functions/get_now_date.dart';
+import 'package:fitpredict/widgets/alert.dart';
 import 'package:hive/hive.dart';
 
 part 'goal.g.dart';
@@ -16,9 +18,10 @@ class Goal {
     this.stepsWalked = 0,
     this.lastSync,
     this.completedAt,
+    this.deleted = false,
   }) : super() {
     // Se a key não for informada, assume o valor do id ou gera um uuid
-    key ??= id?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString();
+    key ??= DateTime.now().microsecondsSinceEpoch.toString();
   }
 
   @HiveField(0)
@@ -44,6 +47,9 @@ class Goal {
 
   @HiveField(7)
   String? completedAt;
+
+  @HiveField(8)
+  bool deleted;
 
   // Retorna o goal a partir de um Map
   factory Goal.fromMap(Map<String, dynamic> map) {
@@ -72,6 +78,8 @@ class Goal {
 
   // Salva o goal no Hive
   void saveToBox() {
+    lastSync = getNowDate();
+
     var box = Hive.box<Goal>('goals');
     box.put(key, this);
   }
@@ -87,15 +95,28 @@ class Goal {
       'stepsWalked': stepsWalked,
       'lastSync': lastSync,
       'completedAt': completedAt,
+      'deleted': deleted,
     };
   }
 
   // Retorna um JSON com os dados do goal
   String toJson() => json.encode(toMap());
 
-  // Deleta o goal do Hive
+  // Deleta o goal
   void delete() {
-    var box = Hive.box<Goal>('goals');
-    box.delete(key);
+    // Se o goal existe na API, apenas marca como deletado, senão deleta do Hive
+    if (id != null) {
+      deleted = true;
+      saveToBox();
+    } else {
+      var box = Hive.box<Goal>('goals');
+      box.delete(key);
+    }
+  }
+
+  // Completa o goal
+  void complete() {
+    completedAt = getNowDate();
+    showSuccess('Parabéns, você completou a meta de $steps passos!');
   }
 }

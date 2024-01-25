@@ -1,6 +1,7 @@
 import 'package:fitpredict/models/user.dart';
 import 'package:fitpredict/pages/main_page.dart';
 import 'package:fitpredict/services/auth_service.dart';
+import 'package:fitpredict/services/sync_service.dart';
 import 'package:fitpredict/widgets/alert.dart';
 import 'package:fitpredict/widgets/input.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
             }
           }
 
-          // TODO: Executar sincronização de dados aqui
+          SyncService.sync();
 
           showSuccess('Login realizado com sucesso!');
         } else {

@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:fitpredict/calculator.dart';
 import 'package:fitpredict/enums/pedestrian_status.dart';
-import 'package:fitpredict/functions/get_now_date.dart';
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/goal.dart';
-import 'package:fitpredict/widgets/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -76,16 +74,18 @@ class PedometerService {
     currentStat!.saveToBox();
 
     // Atualiza as metas
-    Hive.box<Goal>('goals').values.forEach((goal) {
+    Hive.box<Goal>('goals')
+        .values
+        .where((e) => e.completedAt == null && e.deleted == false)
+        .forEach((goal) {
       if (_pendingSteps + goal.stepsWalked > goal.steps) {
         goal.stepsWalked = goal.steps;
       } else {
         goal.stepsWalked += _pendingSteps;
       }
 
-      if (goal.completedAt == null && goal.stepsWalked == goal.steps) {
-        goal.completedAt = getNowDate();
-        showSuccess('Parabéns, você completou a meta de ${goal.steps} passos!');
+      if (goal.stepsWalked == goal.steps) {
+        goal.complete();
       }
 
       goal.saveToBox();

@@ -102,6 +102,7 @@ class _GoalFormPageState extends State<GoalFormPage> {
       autoValidate = true;
     });
     if (_formKey.currentState!.validate()) {
+      // Obtém os valores da meta
       int steps = type == 'steps'
           ? int.parse(_stepsController.text)
           : _calculatedSteps!;
@@ -112,6 +113,15 @@ class _GoalFormPageState extends State<GoalFormPage> {
           ? int.parse(_caloriesController.text)
           : _calculatedCalories!.round();
 
+      // Verifica se a meta é válida
+      if (_goal != null && steps < _goal!.stepsWalked) {
+        showError(
+          'A quantidade de passos não pode ser menor que a quantidade de passos já caminhados (${_goal!.stepsWalked})',
+        );
+        return;
+      }
+
+      // Cria ou atualiza a meta
       if (_goal == null) {
         _goal = Goal(
           steps: steps,
@@ -124,10 +134,19 @@ class _GoalFormPageState extends State<GoalFormPage> {
         _goal!.calories = calories;
       }
 
+      Navigator.popUntil(context, (route) => route.isFirst);
+
+      // Verifica se a meta foi completada
+      if (_goal!.stepsWalked == steps) {
+        _goal!.complete();
+      }
+
+      // Salva a meta
       _goal!.saveToBox();
 
-      Navigator.pop(context);
-      showSuccess('Meta salva com sucesso!');
+      if (_goal!.completedAt == null) {
+        showSuccess('Meta salva com sucesso!');
+      }
     }
   }
 
@@ -222,6 +241,8 @@ class _GoalFormPageState extends State<GoalFormPage> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Insira a quantidade de passos';
+                            } else if (int.parse(value) <= 0) {
+                              return 'A meta deve ter pelo menos 1 passo';
                             }
                             return null;
                           },
@@ -242,6 +263,8 @@ class _GoalFormPageState extends State<GoalFormPage> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Insira a distância a ser percorrida';
+                            } else if (int.parse(value) <= 0) {
+                              return 'A meta deve ter pelo menos 1 metro';
                             }
                             return null;
                           },
@@ -262,6 +285,8 @@ class _GoalFormPageState extends State<GoalFormPage> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Insira a quantidade de calorias';
+                            } else if (int.parse(value) <= 0) {
+                              return 'A meta deve ter pelo menos 1 caloria';
                             }
                             return null;
                           },

@@ -1,9 +1,9 @@
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/handlers/fitness_permission_handler.dart';
+import 'package:fitpredict/models/stat.dart';
 import 'package:fitpredict/pages/goals/goals_page.dart';
 import 'package:fitpredict/pages/home_page.dart';
 import 'package:fitpredict/pages/profile_page.dart';
-import 'package:fitpredict/pages/test_page.dart';
 import 'package:fitpredict/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +19,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
+    currentStat = Stat.getTodayStat();
+
     FitnessPermissionHandler.allowPermission(false).then((value) {
       if (!value) {
         FitnessPermissionHandler.showRequestPermissionDialog(context);
@@ -33,80 +35,49 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: NavigationBar(
-          onDestinationSelected: (int index) {
-            setState(() {
-              currentPageIndex = index;
-            });
-          },
-          indicatorColor: AppColors.primary,
-          selectedIndex: currentPageIndex,
-          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-          indicatorShape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-          destinations: const <Widget>[
-            /* NavigationDestination(
-              selectedIcon: Icon(Icons.code),
-              icon: Icon(Icons.code_outlined),
-              label: 'Teste',
-            ), */
-            NavigationDestination(
-              selectedIcon: Icon(Icons.home),
-              icon: Icon(Icons.home_outlined),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              selectedIcon: Icon(Icons.whatshot),
-              icon: Icon(Icons.whatshot_outlined),
-              label: 'Metas',
-            ),
-            NavigationDestination(
-              selectedIcon: Icon(Icons.person),
-              icon: Icon(Icons.person_outline),
-              label: 'Perfil',
-            ),
-          ],
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        indicatorColor: AppColors.primary,
+        selectedIndex: currentPageIndex,
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        indicatorShape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
-        body: IndexedStack(
-          index: currentPageIndex,
-          children: const <Widget>[
-            // Teste
-            // TestPage(),
-
-            // Home
-            HomePage(),
-
-            // Metas
-            GoalsPage(),
-
-            // Perfil
-            ProfilePage(),
-          ],
-        )
-        /* body: <Widget>[
-        const HomePage(),
-
-        // Metas
-        Scaffold(
-          appBar: AppBar(
-            title: const Text('Metas'),
+        destinations: const <Widget>[
+          NavigationDestination(
+            selectedIcon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
           ),
-          body: const Center(
-            child: Text('Metas'),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.whatshot),
+            icon: Icon(Icons.whatshot_outlined),
+            label: 'Metas',
           ),
-        ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.person),
+            icon: Icon(Icons.person_outline),
+            label: 'Perfil',
+          ),
+        ],
+      ),
+      body: IndexedStack(
+        index: currentPageIndex,
+        children: const <Widget>[
+          // Home
+          HomePage(),
 
-        // Perfil
-        Scaffold(
-          appBar: AppBar(
-            title: const Text('Perfil'),
-          ),
-          body: const Center(
-            child: Text('Perfil'),
-          ),
-        ),
-      ][currentPageIndex], */
-        );
+          // Metas
+          GoalsPage(),
+
+          // Perfil
+          ProfilePage(),
+        ],
+      ),
+    );
   }
 }

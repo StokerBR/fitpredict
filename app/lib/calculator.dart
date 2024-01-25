@@ -78,9 +78,36 @@ class Calculator {
     return Calculator(heightCm: heightCm, weightKg: 0).stepsToDistance(steps);
   }
 
+  // Quantidade de passos a partir da distância (em metros)
+  static int staticDistanceToSteps(double distance, int heightCm) {
+    return Calculator(heightCm: heightCm, weightKg: 0)
+        .distanceToSteps(distance);
+  }
+
   // Calorias gastas de acordo com a quantidade de passos
   static double staticStepsToCalories(int steps, int heightCm, int weightKg) {
     return Calculator(heightCm: heightCm, weightKg: weightKg)
         .stepsToCalories(steps);
+  }
+
+  // Calorias gastas de acordo com a distância (em metros)
+  static double staticDistanceToCalories(
+      double distanceMeters, int heightCm, int weightKg) {
+    return Calculator(heightCm: heightCm, weightKg: weightKg)
+        .distanceToCalories(distanceMeters);
+  }
+
+  // Quantidade de passos a partir das calorias gastas
+  static int staticCaloriesToSteps(
+      double calories, int heightCm, int weightKg) {
+    return Calculator(heightCm: heightCm, weightKg: weightKg)
+        .caloriesToSteps(calories);
+  }
+
+  // Distância (em metros) a partir das calorias gastas
+  static double staticCaloriesToDistance(
+      double calories, int heightCm, int weightKg) {
+    return Calculator(heightCm: heightCm, weightKg: weightKg)
+        .caloriesToDistance(calories);
   }
 }

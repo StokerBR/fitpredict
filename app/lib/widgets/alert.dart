@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/theme.dart';
 
-showAlert(String? type, String message, {Function()? onTap}) {
+showAlert(String message, {String? type, Function()? onTap}) {
   if (message == '{message: Unauthenticated.}') {
     message = 'Login expirado!';
   }
@@ -32,7 +32,8 @@ showAlert(String? type, String message, {Function()? onTap}) {
     backgroundColor: AppColors.blue[900]!,
     borderRadius: const BorderRadius.all(Radius.circular(20)),
     padding: const EdgeInsets.all(20),
-    margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+    // margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+    margin: const EdgeInsets.all(20),
     boxShadows: kElevationToShadow[6],
     isDismissible: true,
     animationDuration: const Duration(milliseconds: 500),
@@ -42,13 +43,13 @@ showAlert(String? type, String message, {Function()? onTap}) {
       color: color,
     ),
     onTap: (_) => onTap,
-  ).show(navigatorKey.currentContext!);
+  ).show(navigatorKey.currentState!.overlay!.context);
 }
 
 showSuccess(String message, {Function()? onTap}) {
-  showAlert('success', message, onTap: onTap);
+  showAlert(message, type: 'success', onTap: onTap);
 }
 
 showError(String message, {Function()? onTap}) {
-  showAlert('error', message, onTap: onTap);
+  showAlert(message, type: 'error', onTap: onTap);
 }
