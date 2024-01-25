@@ -1,9 +1,10 @@
 import { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { SyncDto } from './dto/sync.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UserDto } from 'src/user/dto/user.dto';
 import { dateToString, stringToDate } from 'src/util/functions';
+import * as moment from 'moment';
 
 @Injectable()
 export class SyncService {
@@ -16,7 +17,10 @@ export class SyncService {
    * @returns object
    */
   async sync(req: any, syncDto: SyncDto) {
-    const requestUser: User = req.user;
+    const requestUser: User = {
+      ...req.user,
+      lastSync: moment(req.user.lastSync).utcOffset(3, true).toDate(),
+    };
 
     await this.syncUser(requestUser, syncDto);
     await this.syncStats(requestUser, syncDto);
@@ -44,12 +48,16 @@ export class SyncService {
         return {
           ...goal,
           lastSync: dateToString(goal.lastSync, true),
+          completedAt: goal.completedAt
+            ? dateToString(goal.completedAt, true)
+            : null,
         };
       }),
       stats: stats.map((stat) => {
         return {
           ...stat,
           date: dateToString(stat.date),
+          lastSync: dateToString(stat.lastSync, true),
         };
       }),
     };
@@ -77,12 +85,25 @@ export class SyncService {
     if (syncDto.stats.length > 0) {
       for (const stat of syncDto.stats) {
         // Verificar se o stat já existe
-        const dbStat = await this.prisma.stat.findFirst({
+        let dbStat = await this.prisma.stat.findFirst({
           where: {
-            userId: user.id,
-            date: stat.date,
+            /* userId: user.id,
+            date: stringToDate(stat.date), */
+            AND: [
+              {
+                userId: user.id,
+              },
+              {
+                date: stringToDate(stat.date),
+              },
+            ],
           },
         });
+
+        dbStat = {
+          ...dbStat,
+          lastSync: moment(dbStat.lastSync).utcOffset(3, true).toDate(),
+        };
 
         if (dbStat) {
           if (
@@ -94,13 +115,22 @@ export class SyncService {
               where: {
                 id: dbStat.id,
               },
-              data: { ...stat, lastSync: new Date() },
+              data: {
+                ...stat,
+                date: stringToDate(stat.date),
+                lastSync: new Date(),
+              },
             });
           }
         } else {
           // Criar o stat
           await this.prisma.stat.create({
-            data: { ...stat, userId: user.id, lastSync: new Date() },
+            data: {
+              ...stat,
+              date: stringToDate(stat.date),
+              userId: user.id,
+              lastSync: new Date(),
+            },
           });
         }
       }
@@ -110,18 +140,23 @@ export class SyncService {
   // Sincroniza os dados de metas
   private async syncGoals(user: User, syncDto: SyncDto) {
     if (syncDto.goals.length > 0) {
-      for (const goal of syncDto.goals) {
+      for (const { id, deleted, ...goal } of syncDto.goals) {
         // Verificar se o goal já existe
-        const dbGoal = goal.id
+        let dbGoal = id
           ? await this.prisma.goal.findUnique({
               where: {
-                id: goal.id,
+                id: id,
               },
             })
           : null;
 
         if (dbGoal) {
-          if (goal.deleted) {
+          dbGoal = {
+            ...dbGoal,
+            lastSync: moment(dbGoal.lastSync).utcOffset(3, true).toDate(),
+          };
+
+          if (deleted) {
             // Deletar o goal
             await this.prisma.goal.delete({
               where: {
@@ -137,13 +172,26 @@ export class SyncService {
               where: {
                 id: dbGoal.id,
               },
-              data: { ...goal, lastSync: new Date() },
+              data: {
+                ...goal,
+                lastSync: new Date(),
+                completedAt: goal.completedAt
+                  ? stringToDate(goal.completedAt)
+                  : null,
+              },
             });
           }
         } else {
           // Criar o goal
           await this.prisma.goal.create({
-            data: { ...goal, userId: user.id, lastSync: new Date() },
+            data: {
+              ...goal,
+              userId: user.id,
+              lastSync: new Date(),
+              completedAt: goal.completedAt
+                ? stringToDate(goal.completedAt)
+                : null,
+            },
           });
         }
       }
