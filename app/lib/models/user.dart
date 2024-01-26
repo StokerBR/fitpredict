@@ -93,8 +93,10 @@ class User {
   int addDeviceSteps(int steps) {
     if (lastDeviceSteps == null) {
       lastDeviceSteps = steps;
+      saveToBox();
     } else if (steps < lastDeviceSteps!) {
       lastDeviceSteps = 0;
+      saveToBox();
     }
 
     int diff = steps - lastDeviceSteps!;
