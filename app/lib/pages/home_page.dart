@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/widgets/steps_card.dart';
 import 'package:fitpredict/widgets/sync_button.dart';
+import 'package:fitpredict/widgets/week_stats_chart.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -61,6 +62,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             StepsCard(title: 'Hoje', steps: _stepsToday),
             const SizedBox(height: 20),
             StepsCard(title: 'Total', steps: _stepsTotal),
+            const SizedBox(height: 20),
+            const WeekStatsChart(),
           ],
         ),
       ),

@@ -37,89 +37,87 @@ class StepsCard extends StatelessWidget {
           ),
         ], */
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey[500],
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const RunningIcon(size: 30),
+              const SizedBox(width: 10),
+              Text(
+                '$steps',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 26,
+                ),
               ),
+            ],
+          ),
+          const Text(
+            'passos',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w300,
             ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const RunningIcon(size: 30),
-                const SizedBox(width: 10),
-                Text(
-                  '$steps',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 26,
-                  ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Tooltip(
+                message: 'Distância',
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.pin_drop,
+                      color: Colors.green,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      // '${(stepsToDistance(_stepsTotal, loggedUser!.height) / 1000).toStringAsFixed(2)} km',
+                      getDistanceString(calculator.stepsToDistance(steps)),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const Text(
-              'passos',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w300,
               ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Tooltip(
-                  message: 'Distância',
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.pin_drop,
-                        color: Colors.green,
-                        size: 18,
+              Tooltip(
+                message: 'Calorias',
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.whatshot_rounded,
+                      color: Colors.orange,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      getCaloriesString(calculator.stepsToCalories(steps)),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
                       ),
-                      const SizedBox(width: 10),
-                      Text(
-                        // '${(stepsToDistance(_stepsTotal, loggedUser!.height) / 1000).toStringAsFixed(2)} km',
-                        getDistanceString(calculator.stepsToDistance(steps)),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                Tooltip(
-                  message: 'Calorias',
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.whatshot_rounded,
-                        color: Colors.orange,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        getCaloriesString(calculator.stepsToCalories(steps)),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
