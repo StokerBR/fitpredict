@@ -21,6 +21,8 @@ services:
     image: 'fitpredict-api'
     build:
       context: ./api
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
     ports:
       - 4000:4000
     pull_policy: build
