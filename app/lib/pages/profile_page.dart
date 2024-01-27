@@ -1,6 +1,6 @@
-import 'package:fitpredict/enums/gender_enum.dart';
 import 'package:fitpredict/global_variables.dart';
 import 'package:fitpredict/models/user.dart';
+import 'package:fitpredict/pages/user_page.dart';
 import 'package:fitpredict/services/auth_service.dart';
 import 'package:fitpredict/widgets/menu_bar.dart';
 import 'package:fitpredict/widgets/sync_button.dart';
@@ -33,44 +33,52 @@ class ProfilePage extends StatelessWidget {
                   );
                 }
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                // A primeira, ou duas primeiras (se tiver), letras do nome do usuário
+                String userInitials = user.name
+                    .split(' ')
+                    .map((e) => e.isNotEmpty ? e.substring(0, 1) : '')
+                    .take(2)
+                    .join()
+                    .toUpperCase();
+
+                return Row(
                   children: [
-                    const Text(
-                      'Dados do usuário:',
-                      style: TextStyle(
-                        fontSize: 20,
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.grey[400],
+                      child: Text(
+                        userInitials,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Nome: ${user.name}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'E-mail: ${user.email}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'Sexo: ${GenderEnum.values.where((e) => e.value == user.gender).firstOrNull?.name ?? ''}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'Altura: ${user.height}cm',
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'Peso: ${user.weight}kg',
-                      style: const TextStyle(
-                        fontSize: 16,
+                    const SizedBox(width: 10),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            user.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            user.email,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -82,12 +90,12 @@ class ProfilePage extends StatelessWidget {
             icon: Icons.person_rounded,
             name: 'Dados Pessoais',
             action: () {
-              /* Navigator.push(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ProfilePage(),
+                  builder: (context) => const UserPage(),
                 ),
-              ); */
+              );
             },
           ),
           CustomMenuBar(

@@ -100,12 +100,12 @@ export class SyncService {
           },
         });
 
-        dbStat = {
-          ...dbStat,
-          lastSync: moment(dbStat.lastSync).utcOffset(3, true).toDate(),
-        };
-
         if (dbStat) {
+          dbStat = {
+            ...dbStat,
+            lastSync: moment(dbStat.lastSync).utcOffset(3, true).toDate(),
+          };
+
           if (
             stat.lastSync != null &&
             stringToDate(stat.lastSync) >= dbStat.lastSync
