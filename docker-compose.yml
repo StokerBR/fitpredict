@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  fitpredict-app:
+    container_name: 'fitpredict-app'
+    image: 'fitpredict-app'
+    build:
+      context: ./web
+    env_file:
+      - ./web/docker.env
+    entrypoint: ['npm', 'run', 'start']
+    ports:
+      - 3000:3000
+    networks:
+      - stokerserver_docker
+    depends_on:
+      - fitpredict-api
+    pull_policy: build
+    restart: unless-stopped
+
+  fitpredict-api:
+    container_name: 'fitpredict-api'
+    entrypoint: ['npm', 'run', 'start:prod']
+    image: 'fitpredict-api'
+    build:
+      context: ./api
+    ports:
+      - 4000:4000
+    networks:
+      - stokerserver_docker
+    pull_policy: build
+    restart: unless-stopped
+
+networks:
+  default:
+    name: stokerserver_docker
+    external: true

@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  M
+  F
+}
+
+model User {
+  id          Int      @default(autoincrement()) @id
+  name        String  
+  email       String   @unique
+  password    String
+  gender      Gender
+  height      Int
+  weight      Int
+  totalSteps  Int      @default(0)
+  lastSync    DateTime @default(now()) @db.Timestamptz(3)
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @default(now()) @db.Timestamptz(3)
+
+  goals       Goal[]
+  stats       Stat[]
+  
+  @@map("users")
+}
+
+model Goal {
+  id          Int       @default(autoincrement()) @id
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  steps       Int
+  distance    Int // Metros
+  calories    Int
+  stepsWalked Int       @default(0)
+  lastSync    DateTime  @default(now()) @db.Timestamptz(3)
+  completedAt DateTime? @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime  @default(now()) @db.Timestamptz(3)
+  
+  @@map("goals")
+}
+
+model Stat {
+  id          Int      @default(autoincrement()) @id
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  date        DateTime @db.Date
+  steps       Int
+  distance    Int // Metros
+  calories    Int
+  lastSync    DateTime @default(now()) @db.Timestamptz(3)
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  
+  @@unique([userId, date])
+  @@map("stats")
+}
