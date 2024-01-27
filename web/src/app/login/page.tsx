@@ -1,20 +1,15 @@
 'use client';
 // React Imports
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 
 // Next Imports
 import Link from 'next/link';
 import Image from 'next/image';
-import {useRouter} from 'next/navigation';
 
 // MUI Imports
 import Box from '@mui/material/Box';
-import MuiLink from '@mui/material/Link';
-import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
-import AlertTitle from '@mui/material/AlertTitle';
 import InputLabel from '@mui/material/InputLabel';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -29,7 +24,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 // Icons Imports
 import EyeOutline from 'mdi-material-ui/EyeOutline';
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline';
-import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline';
 
 // Form Imports
 import {z} from 'zod';
@@ -46,22 +40,23 @@ import {InfoDialog} from '@/components/InfoDialog';
 import {LoginParams} from '@/types/authContext';
 import {InfoDialogPropsType} from '@/components/InfoDialog';
 
+// Utils Imports
+import {getErrorDialogProps} from '@/components/InfoDialog';
+
 // Styled Components
 const Card = styled(MuiCard)<CardProps>(({theme}) => ({
   [theme.breakpoints.up('sm')]: {width: 450},
 }));
 
-const LoginPage = () => {
+function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [infoDialogProps, setInfoDialogProps] = useState<InfoDialogPropsType>({
     open: false,
   });
-  const [open, setOpen] = React.useState(false);
 
   // Hooks
   const theme = useTheme();
   const {login} = useAuth();
-  const router = useRouter();
 
   const defaultValues: LoginParams = {
     email: '',
@@ -88,11 +83,13 @@ const LoginPage = () => {
     try {
       await login(data);
     } catch (error) {
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         setError('email', {
           type: 'manual',
           message: 'E-mail ou senha inválidos.',
         });
+      } else {
+        setInfoDialogProps(getErrorDialogProps(error));
       }
     }
   }
@@ -141,7 +138,6 @@ const LoginPage = () => {
                   rules={{required: true}}
                   render={({field: {value, onChange, onBlur, name, ref}}) => (
                     <TextField
-                      autoFocus
                       ref={ref}
                       name={name}
                       value={value}
@@ -161,8 +157,8 @@ const LoginPage = () => {
               </FormControl>
               <FormControl fullWidth>
                 <InputLabel
-                  htmlFor="auth-login-v2-password"
                   error={Boolean(errors.password)}
+                  htmlFor={'password_input'}
                 >
                   Senha
                 </InputLabel>
@@ -178,7 +174,8 @@ const LoginPage = () => {
                       onBlur={onBlur}
                       label={'Senha'}
                       onChange={onChange}
-                      id="auth-login-v2-password"
+                      id={'password_input'}
+                      placeholder={'Senha'}
                       error={Boolean(errors.password)}
                       type={showPassword ? 'text' : 'password'}
                       endAdornment={
@@ -249,6 +246,6 @@ const LoginPage = () => {
       </Box>
     </Box>
   );
-};
+}
 
 export default LoginPage;
