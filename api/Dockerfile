@@ -1,5 +1,4 @@
-FROM node:18-alpine3.16
-RUN apk add --no-cache bash
+FROM node:18-alpine3.17
 
 WORKDIR /app
 
