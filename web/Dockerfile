@@ -7,7 +7,9 @@ COPY . .
 RUN rm package-lock.json
 
 # Apaga o arquivo .env caso ele exista
-RUN [ ! -e src/.env.end ] || rm src/.env.end
+RUN [ ! -e .env ] || rm .env
+
+COPY docker.env .env
 
 RUN npm install
 
