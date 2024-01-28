@@ -128,7 +128,6 @@ function AuthProvider({children}: Props) {
 
   async function logout() {
     clearDataUserStorage();
-    setIsInitialized(false);
     router.push('/login');
   }
 
