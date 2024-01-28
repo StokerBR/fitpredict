@@ -1,8 +1,8 @@
-// ** MUI Imports
+// MUI Imports
 import {AvatarProps} from '@mui/material/Avatar';
 
-// ** Types
-import {ThemeColor} from 'src/@core/layouts/types';
+// Types Imports
+import {ThemeColor} from '@/types/system';
 
 export type CustomAvatarProps = AvatarProps & {
   color?: ThemeColor;
