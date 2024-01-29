@@ -181,7 +181,7 @@ export class SyncService {
               },
             });
           }
-        } else {
+        } else if (!id) {
           // Criar o goal
           await this.prisma.goal.create({
             data: {
