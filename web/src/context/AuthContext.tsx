@@ -9,16 +9,11 @@ import {useRouter} from 'next/navigation';
 import axios from 'axios';
 import {Api} from '@/services/api/api';
 import {LOGIN} from '@/services/endpoints/auth';
-import {SYNC} from '@/services/endpoints/sync';
 import {USER_GET, USER_REGISTER} from '@/services/endpoints/user';
 
-// Third party imports
-import moment from 'moment';
-
 // Types Imports
-import {Sync, SyncParams} from '@/types/sync';
-import {Goal} from '@/types/goals';
-import {User, Stat} from '@/types/user';
+import {User} from '@/types/user';
+import {Calculator} from '@/utils/calculator';
 import {
   Tokens,
   LoginParams,
@@ -29,12 +24,9 @@ import {
 
 const defaultProviderValues: AuthContextValues = {
   user: null,
-  stats: null,
-  goals: null,
   loading: true,
-  sync: () => null,
+  calculator: null,
   setUser: () => null,
-  setGoals: () => null,
   isInitialized: false,
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
@@ -50,14 +42,9 @@ type Props = {
 };
 
 function AuthProvider({children}: Props) {
-  const [stats, setStats] = useState<Stat[] | null>(
-    defaultProviderValues.stats
-  );
-  const [goals, setGoals] = useState<Goal[] | null>(
-    defaultProviderValues.goals
-  );
   const [user, setUser] = useState<User | null>(defaultProviderValues.user);
   const [tokens, setTokens] = useState<Tokens | null>(null);
+  const [calculator, setCalculator] = useState<Calculator | null>(null);
   const [loading, setLoading] = useState<boolean>(
     defaultProviderValues.loading
   );
@@ -86,13 +73,9 @@ function AuthProvider({children}: Props) {
   useEffect(() => {
     if (user) {
       window.localStorage.setItem('userData', JSON.stringify(user));
+      setCalculator(new Calculator(user.height, user.weight));
     }
   }, [user]);
-
-  function handleSetGoals(goals: Goal[]) {
-    setGoals(goals);
-    sync({newGoals: goals});
-  }
 
   function clearDataUserStorage() {
     setUser(null);
@@ -154,34 +137,14 @@ function AuthProvider({children}: Props) {
     }
   }
 
-  async function sync({newUser, newGoals}: SyncParams) {
-    if (user?.id) {
-      try {
-        const params = {
-          user: newUser || user,
-          stats: stats || [],
-          goals: newGoals?.length ? newGoals : goals || [],
-        };
-        const response = await Api.post<Sync>(SYNC, params);
-        setStats(response.data.stats);
-        setGoals(response.data.goals.sort((a, b) => b.id - a.id));
-      } catch (error) {
-        throw error;
-      }
-    }
-  }
-
   const values: AuthContextValues = {
     user,
-    stats,
-    goals,
-    sync,
     setUser,
     loading,
+    calculator,
     setLoading,
     isInitialized,
     setIsInitialized,
-    setGoals: handleSetGoals,
     login,
     logout,
     register,

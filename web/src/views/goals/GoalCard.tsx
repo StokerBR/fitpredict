@@ -1,6 +1,6 @@
 'use client';
 // React Imports
-import {Dispatch, SetStateAction} from 'react';
+import {Dispatch, SetStateAction, use, useEffect, useState} from 'react';
 
 //Mui Imports
 import Card from '@mui/material/Card';
@@ -38,9 +38,10 @@ import {InfoDialogPropsType} from '@/components/InfoDialog';
 
 type TotalStat = {
   steps: number;
-  stepsWlaked: number;
   calories: string;
   distance: string;
+  stepsWlaked: number;
+  distanceUnit: string;
   goalPercentage: number;
 };
 
@@ -51,34 +52,30 @@ type Props = {
 
 function GoalCard({goal, setInfoDialogProps}: Props) {
   const theme = useTheme();
-  const {user, goals, setGoals} = useAuth();
-  const calculator = new Calculator(user.height, user.weight);
+  const {calculator} = useAuth();
+  const [statsTotal, setStatsTotal] = useState<TotalStat>(null);
 
-  const distance = calculator.stepsToDistance(goal?.steps || 0);
-
-  const statsTotal: TotalStat = {
-    steps: goal?.steps || 0,
-    stepsWlaked: goal?.stepsWalked || 0,
-    calories: calculator.stepsToCalories(goal?.steps || 0).toFixed(2),
-    distance:
-      distance > 1000 ? (distance / 1000).toFixed(2) : distance.toFixed(2),
-    goalPercentage: (goal?.stepsWalked / goal?.steps) * 100 || 0,
-  };
+  useEffect(() => {
+    if (goal) {
+      if (calculator) {
+        const distance = calculator.stepsToDistance(goal?.steps || 0);
+        setStatsTotal({
+          steps: goal?.steps || 0,
+          stepsWlaked: goal?.stepsWalked || 0,
+          calories: calculator.stepsToCalories(goal?.steps || 0).toFixed(2),
+          distance: distance.toFixed(2),
+          goalPercentage: (goal?.stepsWalked / goal?.steps) * 100 || 0,
+          distanceUnit: distance > 1000 ? 'Km' : 'm',
+        });
+      }
+    } else {
+      setStatsTotal(null);
+    }
+  }, [goal, calculator]);
 
   const canEdit = goal?.stepsWalked <= goal?.steps && !goal?.completedAt;
 
-  function deleteGoal() {
-    const newGoals = goals?.map(goalItem => {
-      if (goalItem.id === goal.id) {
-        return {
-          ...goalItem,
-          deleted: true,
-        };
-      }
-      return goalItem;
-    });
-    setGoals(newGoals);
-  }
+  function deleteGoal() {}
 
   function handleDelete() {
     setInfoDialogProps({
@@ -91,6 +88,8 @@ function GoalCard({goal, setInfoDialogProps}: Props) {
       handleConfirm: () => deleteGoal(),
     });
   }
+
+  if (!statsTotal) return null;
 
   return (
     <Card
@@ -146,8 +145,8 @@ function GoalCard({goal, setInfoDialogProps}: Props) {
                   </Grid>
                   <Grid item xs>
                     <Typography variant="h6" sx={{mt: -1}}>
-                      {statsTotal.distance || 0.0}{' '}
-                      {distance > 1000 ? 'Km' : 'm'}
+                      {statsTotal.distance || '0.00'}{' '}
+                      {statsTotal?.distanceUnit || 'm'}
                     </Typography>
                   </Grid>
                 </Grid>

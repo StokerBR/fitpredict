@@ -1,6 +1,10 @@
 'use client';
 // React Imports
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+
+// Api Imports
+import {Api} from '@/services/api/api';
+import {GOALCONTROLL} from '@/services/endpoints/goal';
 
 // MUI Imports
 import Grid from '@mui/material/Grid';
@@ -10,21 +14,39 @@ import GoalCard from '@/views/goals/GoalCard';
 import {InfoDialog} from '@/components/InfoDialog';
 
 // Type Imports
+import {Goal} from '@/types/goals';
 import {InfoDialogPropsType} from '@/components/InfoDialog';
 
-// Hooks Imports
-import {useAuth} from '@/hooks/useAuth';
+// Utils Imports
+import {getErrorDialogProps} from '@/components/InfoDialog';
 
 function DashboardPage() {
-  const {goals} = useAuth();
+  const [goalsList, setGoalsList] = useState<Goal[]>([]);
   const [infoDialogProps, setInfoDialogProps] = useState<InfoDialogPropsType>({
     open: false,
   });
+
+  useEffect(() => {
+    async function getGoalsList() {
+      try {
+        const response = await Api.get<Goal[]>(GOALCONTROLL());
+        if (response?.data?.length > 0) {
+          setGoalsList(response?.data);
+        } else {
+          setGoalsList([]);
+        }
+      } catch (error) {
+        setInfoDialogProps(getErrorDialogProps(error));
+      }
+    }
+    getGoalsList();
+  }, []);
+
   return (
     <Grid container spacing={6} sx={{justifyContent: 'center'}}>
       <Grid item xs={12} sm={9} md={6} lg={4.5} xl={4}>
         <Grid container spacing={6}>
-          {goals?.map(goal => (
+          {goalsList?.map(goal => (
             <Grid item xs={12} key={goal.id}>
               <GoalCard goal={goal} setInfoDialogProps={setInfoDialogProps} />
             </Grid>

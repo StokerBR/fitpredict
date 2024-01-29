@@ -1,4 +1,7 @@
 'use client';
+// React Imports
+import {useState, useEffect} from 'react';
+
 // Next Import
 import Image from 'next/image';
 
@@ -14,7 +17,6 @@ import Whatshot from '@mui/icons-material/Whatshot';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 
 // Utils Imports
-import {Calculator} from '@/utils/calculator';
 import {hexToRGBA} from '@/utils/hex-to-rgba';
 
 // Hooks Imports
@@ -24,20 +26,26 @@ type TotalStat = {
   steps: number;
   calories: string;
   distance: string;
+  distanceUnit: string;
 };
 
 function TotalStepsCard() {
-  const {user} = useAuth();
   const theme = useTheme();
-  const calculator = new Calculator(user.height, user.weight);
+  const {user, calculator} = useAuth();
+  const [statsTotal, setStatsTotal] = useState<TotalStat>();
 
-  const distance = calculator.stepsToDistance(user?.totalSteps || 0);
-  const statsTotal = {
-    steps: user?.totalSteps || 0,
-    calories: calculator.stepsToCalories(user?.totalSteps || 0).toFixed(2),
-    distance:
-      distance > 1000 ? (distance / 1000).toFixed(2) : distance.toFixed(2),
-  };
+  useEffect(() => {
+    if (user?.totalSteps && calculator) {
+      const distance = calculator?.stepsToDistance(user?.totalSteps || 0);
+      setStatsTotal({
+        steps: user?.totalSteps || 0,
+        calories: calculator?.stepsToCalories(user?.totalSteps || 0).toFixed(2),
+        distance:
+          distance > 1000 ? (distance / 1000).toFixed(2) : distance.toFixed(2),
+        distanceUnit: distance > 1000 ? 'Km' : 'm',
+      });
+    }
+  }, [user, calculator]);
 
   return (
     <Card
@@ -76,7 +84,7 @@ function TotalStepsCard() {
               height={30}
             />
             <Typography variant="h5" sx={{ml: 3, mt: 0.6}}>
-              {statsTotal.steps}
+              {statsTotal?.steps || 0}
             </Typography>
           </Grid>
           <Grid
@@ -101,7 +109,7 @@ function TotalStepsCard() {
                   <Grid item xs>
                     <Typography sx={{mt: -0.5}} variant="h6">
                       {statsTotal?.distance || '0.00'}{' '}
-                      {distance > 1000 ? 'Km' : 'm'}
+                      {statsTotal?.distanceUnit || 'm'}
                     </Typography>
                   </Grid>
                 </Grid>

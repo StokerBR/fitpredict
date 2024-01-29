@@ -18,7 +18,7 @@ type Props = {
 function AuthGuard({children}: Props) {
   const router = useRouter();
   const pathname = usePathname();
-  const {isInitialized, user, loading, sync} = useAuth();
+  const {isInitialized, user, loading} = useAuth();
   const publicRoutes = ['/login', '/register', '/401', '/500'];
 
   useEffect(() => {
@@ -30,8 +30,6 @@ function AuthGuard({children}: Props) {
           pathname === '/'
         ) {
           router.replace('/apps/dashboard');
-        } else {
-          sync({});
         }
       } else {
         if (!publicRoutes.includes(pathname)) {

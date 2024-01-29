@@ -1,6 +1,13 @@
 'use client';
+// React Imports
+import {useState, useEffect, Dispatch, SetStateAction} from 'react';
+
 // Next Import
 import Image from 'next/image';
+
+// Api Imports
+import {Api} from '@/services/api/api';
+import {GETSTATSTODAY} from '@/services/endpoints/stat';
 
 //Mui Imports
 import Card from '@mui/material/Card';
@@ -8,44 +15,64 @@ import Grid from '@mui/material/Grid';
 import {useTheme} from '@mui/material';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Icons Imports
 import Whatshot from '@mui/icons-material/Whatshot';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 
-// Third party imports
-import moment from 'moment';
-
 // Utils Imports
-import {Calculator} from '@/utils/calculator';
 import {hexToRGBA} from '@/utils/hex-to-rgba';
+import {getErrorDialogProps} from '@/components/InfoDialog';
 
 // Hooks Imports
 import {useAuth} from '@/hooks/useAuth';
 
-type TotalStat = {
+// Types Imports
+import {Stat} from '@/types/user';
+import {InfoDialogPropsType} from '@/components/InfoDialog';
+
+type Props = {
+  setInfoDialogProps: Dispatch<SetStateAction<InfoDialogPropsType>>;
+};
+
+type TodayStats = {
   steps: number;
   calories: string;
   distance: string;
+  distanceUnit: string;
 };
 
-function TodayStepsCard() {
+function TodayStepsCard({setInfoDialogProps}: Props) {
   const theme = useTheme();
-  const {stats, user} = useAuth();
-  const calculator = new Calculator(user.height, user.weight);
+  const {calculator} = useAuth();
+  const [todayStats, setTodayStats] = useState<TodayStats>();
 
-  const stepsToday =
-    stats?.find(stat =>
-      moment(stat.date).startOf('day').isSame(moment().startOf('day'))
-    )?.steps || 0;
+  useEffect(() => {
+    async function getStatsToday() {
+      try {
+        const response = await Api.get<Stat>(GETSTATSTODAY);
 
-  const distance = calculator.stepsToDistance(stepsToday);
-  const totalStat: TotalStat = {
-    steps: stepsToday,
-    calories: calculator.stepsToCalories(stepsToday).toFixed(2),
-    distance:
-      distance > 1000 ? (distance / 1000).toFixed(2) : distance.toFixed(2),
-  };
+        const distance = calculator.stepsToDistance(response?.data?.steps || 0);
+        setTodayStats({
+          steps: response?.data?.steps || 0,
+          distance:
+            distance > 1000
+              ? (distance / 1000).toFixed(2)
+              : distance.toFixed(2),
+          calories: calculator
+            .stepsToCalories(response?.data?.steps || 0)
+            .toFixed(2),
+          distanceUnit: distance > 1000 ? 'Km' : 'm',
+        });
+      } catch (error) {
+        setInfoDialogProps(getErrorDialogProps(error));
+      }
+    }
+    if (calculator) {
+      getStatsToday();
+    }
+  }, [calculator, setInfoDialogProps]);
 
   return (
     <Card
@@ -84,7 +111,7 @@ function TodayStepsCard() {
               height={30}
             />
             <Typography variant="h5" sx={{ml: 3, mt: 0.6}}>
-              {totalStat.steps}
+              {todayStats?.steps || 0}
             </Typography>
           </Grid>
           <Grid
@@ -108,8 +135,8 @@ function TodayStepsCard() {
                   </Grid>
                   <Grid item xs>
                     <Typography sx={{mt: -0.5}} variant="h6">
-                      {totalStat?.distance || '0.00'}{' '}
-                      {distance > 1000 ? 'Km' : 'm'}
+                      {todayStats?.distance || '0.00'}{' '}
+                      {todayStats?.distanceUnit || 'm'}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -121,7 +148,7 @@ function TodayStepsCard() {
                   </Grid>
                   <Grid item xs={'auto'}>
                     <Typography sx={{mt: -0.5}} variant="h6">
-                      {totalStat?.calories || '0.00'} Kcal
+                      {todayStats?.calories || '0.00'} Kcal
                     </Typography>
                   </Grid>
                 </Grid>
