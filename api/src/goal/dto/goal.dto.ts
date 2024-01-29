@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsDate,
   IsDateString,
   IsInt,
   IsNotEmpty,
@@ -9,16 +8,6 @@ import {
 } from 'class-validator';
 
 export class GoalDto {
-  @IsInt()
-  @IsOptional()
-  @ApiProperty({
-    description: 'ID da Meta',
-    type: 'int',
-    example: 1,
-    required: false,
-  })
-  id: number;
-
   @IsInt()
   @Min(0)
   @IsNotEmpty()

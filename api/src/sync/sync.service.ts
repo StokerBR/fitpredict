@@ -1,8 +1,8 @@
 import { User } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
 import { SyncDto } from './dto/sync.dto';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserDto } from 'src/user/dto/user.dto';
+import { PrismaService } from '../prisma/prisma.service';
 import { dateToString, stringToDate } from 'src/util/functions';
 import * as moment from 'moment';
 

@@ -41,7 +41,7 @@ export class AuthService {
       | 'updatedAt'
     >
   > {
-    let userData = { user: { id: userId } };
+    const userData = { user: { id: userId } };
     const user = isInternal
       ? await this.userService.getUserInternal(userData)
       : await this.userService.getUser(userData);
