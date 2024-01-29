@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import AppBar from '@mui/material/AppBar';
 import {styled} from '@mui/material/styles';
+import Tooltip from '@mui/material/Tooltip';
 import MuiToolbar, {ToolbarProps} from '@mui/material/Toolbar';
 
 // Icons Imports
@@ -124,9 +125,16 @@ const HorizontalLayout = ({children}: LayoutProps) => {
       <Footer />
 
       {/* Scroll to top button */}
-      <ScrollToTop className="mui-fixed">
-        <Fab color="primary" size="small" aria-label="scroll back to top">
-          <ArrowUp />
+      <ScrollToTop>
+        <Fab
+          color="primary"
+          size="small"
+          aria-label="scroll back to top"
+          className={'rounded-xl'}
+        >
+          <Tooltip title="Voltar para o topo" placement={'left'}>
+            <ArrowUp />
+          </Tooltip>
         </Fab>
       </ScrollToTop>
     </HorizontalLayoutWrapper>

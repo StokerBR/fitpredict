@@ -7,7 +7,6 @@ import {styled} from '@mui/material/styles';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 
 interface ScrollToTopProps {
-  className?: string;
   children: ReactNode;
 }
 
@@ -18,7 +17,7 @@ const ScrollToTopStyled = styled('div')(({theme}) => ({
   bottom: theme.spacing(10),
 }));
 
-const ScrollToTop = ({children, className}: ScrollToTopProps) => {
+const ScrollToTop = ({children}: ScrollToTopProps) => {
   const trigger = useScrollTrigger({
     threshold: 400,
     disableHysteresis: true,
@@ -34,9 +33,9 @@ const ScrollToTop = ({children, className}: ScrollToTopProps) => {
   return (
     <Zoom in={trigger}>
       <ScrollToTopStyled
-        className={className}
-        onClick={handleClick}
         role="presentation"
+        onClick={handleClick}
+        className={'mui-fixed-scroll-to-top'}
       >
         {children}
       </ScrollToTopStyled>

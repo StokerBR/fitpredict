@@ -8,10 +8,15 @@ import {GOALCONTROLL} from '@/services/endpoints/goal';
 
 // MUI Imports
 import Grid from '@mui/material/Grid';
+import Tooltip from '@mui/material/Tooltip';
+
+// Icons Imports
+import AddIcon from '@mui/icons-material/Add';
 
 // Custom Components Imports
 import GoalCard from '@/views/goals/GoalCard';
 import {InfoDialog} from '@/components/InfoDialog';
+import FloatingButton from '@/components/floating-button';
 
 // Type Imports
 import {Goal} from '@/types/goals';
@@ -74,6 +79,11 @@ function DashboardPage() {
           }))
         }
       />
+      <FloatingButton>
+        <Tooltip title="Criar meta" placement="left">
+          <AddIcon />
+        </Tooltip>
+      </FloatingButton>
     </Grid>
   );
 }
