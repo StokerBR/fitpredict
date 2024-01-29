@@ -36,12 +36,14 @@ class PedometerService {
   // Atualiza a contagem de passos do usuário
   void _onStepCount(StepCount event) {
     int steps = event.steps;
-    stepCount.value = steps;
 
     // Adiciona os passos ao usuário e obtém a diferença
     int addedSteps = loggedUser!.addDeviceSteps(steps);
     // Adiciona os passos ao total de passos do dia
     currentStat!.steps += addedSteps;
+
+    // Atualiza o valor da contagem de passos
+    stepCount.value = steps;
 
     if (addedSteps > 0) {
       _saveStepsTimer?.cancel();
