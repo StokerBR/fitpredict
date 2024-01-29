@@ -76,7 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
             );
           }
 
-          SyncService.sync();
+          SyncService.sync(true);
 
           showSuccess('Cadastro realizado com sucesso!');
         }

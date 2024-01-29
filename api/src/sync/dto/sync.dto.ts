@@ -1,27 +1,9 @@
-import {
-  IsArray,
-  IsBoolean,
-  IsNotEmpty,
-  IsOptional,
-  ValidateNested,
-} from 'class-validator';
+import { IsArray, IsNotEmpty, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { UserDto } from 'src/user/dto/user.dto';
-import { GoalDto } from 'src/goal/dto/goal.dto';
 import { StatDto } from 'src/stat/dto/stat.dto';
 import { ApiProperty } from '@nestjs/swagger';
-
-class SyncGoalDto extends GoalDto {
-  @IsOptional()
-  @IsBoolean()
-  @ApiProperty({
-    description: 'Indica se a meta foi deletada no app',
-    type: 'boolean',
-    example: false,
-    required: false,
-  })
-  deleted: boolean;
-}
+import { SyncGoalDto } from 'src/goal/dto/sync-goal.dto';
 
 export class SyncDto {
   @ValidateNested()

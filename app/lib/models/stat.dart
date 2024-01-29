@@ -55,11 +55,11 @@ class Stat {
   }
 
   // Salva o stat no Hive
-  void saveToBox() {
+  Future<void> saveToBox() async {
     lastSync = getNowDate();
 
     var box = Hive.box<Stat>('stats');
-    box.put(date, this);
+    await box.put(date, this);
   }
 
   // Retorna um Map com os dados do stat
