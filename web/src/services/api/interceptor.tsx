@@ -38,6 +38,7 @@ function AxiosInterceptor({children}: AxiosInterceptorProps) {
     );
 
     return () => Api.interceptors.response.eject(interceptor);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return children;

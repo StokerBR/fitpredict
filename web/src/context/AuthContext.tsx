@@ -102,6 +102,7 @@ function AuthProvider({children}: Props) {
       window.localStorage.setItem('userData', JSON.stringify(user));
       sync();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   async function login(
