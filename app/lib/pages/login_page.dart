@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
             }
           }
 
-          SyncService.sync();
+          SyncService.sync(true);
 
           showSuccess('Login realizado com sucesso!');
         } else {
