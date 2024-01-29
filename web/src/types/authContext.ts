@@ -1,5 +1,6 @@
 // Type Imports
-import {User} from './user';
+import {Goal} from './goals';
+import {User, Stat} from './user';
 import {DefaultApiError} from './system';
 
 export type LoginParams = {
@@ -19,7 +20,10 @@ export type Tokens = {
 export type ErrorCallback = (error: DefaultApiError | string) => void;
 
 export type AuthContextValues = {
+  goals: Goal[];
+  stats: Stat[];
   loading: boolean;
+  sync: () => void;
   user: User | null;
   logout: () => void;
   isInitialized: boolean;

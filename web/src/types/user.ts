@@ -4,12 +4,22 @@ export enum Gender {
 }
 
 export interface User {
-  id: string;
+  id: number;
   email: string;
   name: string;
   gender: Gender;
   height: number;
   weight: number;
-  lastSync: Date;
+  lastSync: string;
   totalSteps: number;
+}
+
+export interface Stat {
+  id: number;
+  date: string;
+  steps: number;
+  userId: number;
+  distance: number;
+  calories: number;
+  lastSync: string;
 }

@@ -21,7 +21,7 @@ function navigation(): HorizontalNavItemsType {
       title: 'Metas',
       icon: WhatshotOutlined,
       selectedIcon: Whatshot,
-      path: '/apps/achieves',
+      path: '/apps/goals',
     },
   ];
 }

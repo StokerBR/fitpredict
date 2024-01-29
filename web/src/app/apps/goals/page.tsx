@@ -1,4 +1,4 @@
-function AchievesPage() {
+function GoalsPage() {
   return (
     <div>
       <h1>Metas</h1>
@@ -6,4 +6,4 @@ function AchievesPage() {
   );
 }
 
-export default AchievesPage;
+export default GoalsPage;

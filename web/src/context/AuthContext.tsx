@@ -9,13 +9,16 @@ import {useRouter} from 'next/navigation';
 import axios from 'axios';
 import {Api} from '@/services/api/api';
 import {LOGIN} from '@/services/endpoints/auth';
+import {SYNC} from '@/services/endpoints/sync';
 import {USER_GET, USER_REGISTER} from '@/services/endpoints/user';
 
 // Third party imports
-import bcryptjs from 'bcryptjs';
+import moment from 'moment';
 
 // Types Imports
-import {User} from '@/types/user';
+import {Sync} from '@/types/sync';
+import {Goal} from '@/types/goals';
+import {User, Stat} from '@/types/user';
 import {
   Tokens,
   LoginParams,
@@ -26,7 +29,10 @@ import {
 
 const defaultProviderValues: AuthContextValues = {
   user: null,
+  stats: null,
+  goals: null,
   loading: true,
+  sync: () => null,
   setUser: () => null,
   isInitialized: false,
   setLoading: () => Boolean,
@@ -43,6 +49,12 @@ type Props = {
 };
 
 function AuthProvider({children}: Props) {
+  const [stats, setStats] = useState<Stat[] | null>(
+    defaultProviderValues.stats
+  );
+  const [goals, setGoals] = useState<Goal[] | null>(
+    defaultProviderValues.goals
+  );
   const [user, setUser] = useState<User | null>(defaultProviderValues.user);
   const [tokens, setTokens] = useState<Tokens | null>(null);
   const [loading, setLoading] = useState<boolean>(
@@ -76,11 +88,6 @@ function AuthProvider({children}: Props) {
     }
   }, [user]);
 
-  // Função de encriptação da senha para mandar para o backend
-  async function encryptText(value: string) {
-    return await bcryptjs.hash(value, 10);
-  }
-
   function clearDataUserStorage() {
     setUser(null);
     setTokens(null);
@@ -91,8 +98,9 @@ function AuthProvider({children}: Props) {
   }
 
   useEffect(() => {
-    if (user) {
+    if (user?.id) {
       window.localStorage.setItem('userData', JSON.stringify(user));
+      sync();
     }
   }, [user]);
 
@@ -110,12 +118,7 @@ function AuthProvider({children}: Props) {
       window.localStorage.setItem('refreshToken', refreshToken);
       Api.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken;
 
-      const responseUser = await axios.get(USER_GET, {
-        headers: {
-          Authorization: 'Bearer ' + accessToken,
-        },
-      });
-
+      const responseUser = await Api.get<User>(USER_GET);
       setUser(responseUser.data);
     } catch (error) {
       if (errorCallBack) {
@@ -146,8 +149,28 @@ function AuthProvider({children}: Props) {
     }
   }
 
+  async function sync() {
+    if (user?.id) {
+      try {
+        const params = {
+          user: user,
+          stats: stats || [],
+          goals: goals || [],
+        };
+        const response = await Api.post<Sync>(SYNC, params);
+        setStats(response.data.stats);
+        setGoals(response.data.goals);
+      } catch (error) {
+        throw error;
+      }
+    }
+  }
+
   const values: AuthContextValues = {
     user,
+    stats,
+    goals,
+    sync,
     setUser,
     loading,
     setLoading,
