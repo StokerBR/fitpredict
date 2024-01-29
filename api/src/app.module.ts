@@ -6,9 +6,10 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { SyncModule } from './sync/sync.module';
 import { GoalModule } from './goal/goal.module';
+import { StatModule } from './stat/stat.module';
 
 @Module({
-  imports: [PrismaModule, UserModule, AuthModule, SyncModule, GoalModule],
+  imports: [PrismaModule, UserModule, AuthModule, SyncModule, GoalModule, StatModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -51,3 +51,14 @@ export function stringToDate(date: string, ajustTimezone = false): Date {
 
   // return dateObj;
 }
+
+export function getWeekDays(): Date[] {
+  const weekDays: Date[] = [];
+  const startOfWeek = moment().startOf('week');
+
+  for (let i = 0; i < 7; i++) {
+    weekDays.push(moment(startOfWeek).add(i, 'days').toDate());
+  }
+  console.log(weekDays);
+  return weekDays;
+}

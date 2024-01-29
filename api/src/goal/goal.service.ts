@@ -101,7 +101,7 @@ export class GoalService {
   /**
    * Busca as metas de um usuário
    * @param req
-   * @returns Goal
+   * @returns Goals
    */
   async getGoals(req: any) {
     try {

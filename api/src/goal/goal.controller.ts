@@ -134,6 +134,21 @@ export class GoalController {
       },
     },
   })
+  @ApiInternalServerErrorResponse({
+    // Documentação da resposta pro swagger
+    description: 'Erro ao buscar as metas do usuário',
+    content: {
+      'application/json': {
+        schema: {
+          example: {
+            statusCode: 500,
+            message:
+              'Não foi possível buscar as metas. Tente novamente mais tarde.',
+          },
+        },
+      },
+    },
+  })
   getGoals(@Request() req: any) {
     return this.goalService.getGoals(req);
   }
@@ -157,6 +172,21 @@ export class GoalController {
             stepsWalked: 1000,
             lastSync: '2024-01-22 12:30:00',
             completedAt: '2024-01-22 12:30:00',
+          },
+        },
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    // Documentação da resposta pro swagger
+    description: 'Erro ao buscar a meta',
+    content: {
+      'application/json': {
+        schema: {
+          example: {
+            statusCode: 500,
+            message:
+              'Não foi possível buscar asmeta. Tente novamente mais tarde.',
           },
         },
       },
