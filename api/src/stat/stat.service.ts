@@ -71,7 +71,6 @@ export class StatService {
         date: moment(todayStat.date).toISOString().split('T')[0],
       };
     } catch (error) {
-      console.log(error);
       throw new HttpException(
         'Falha ao buscar estatística. Tente novamente mais tarde.',
         HttpStatus.INTERNAL_SERVER_ERROR,
