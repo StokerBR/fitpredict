@@ -1,6 +1,10 @@
 'use client';
 // React Imports
-import {Dispatch, SetStateAction, use, useEffect, useState} from 'react';
+import {Dispatch, SetStateAction, useEffect, useState} from 'react';
+
+// Api Imports
+import {Api} from '@/services/api/api';
+import {GOALCONTROLL} from '@/services/endpoints/goal';
 
 //Mui Imports
 import Card from '@mui/material/Card';
@@ -26,7 +30,6 @@ import moment from 'moment';
 import {CircularProgressWithLabel} from '@/components/circular-progress-with-label';
 
 // Utils Imports
-import {Calculator} from '@/utils/calculator';
 import {hexToRGBA} from '@/utils/hex-to-rgba';
 
 // Hooks Imports
@@ -34,7 +37,10 @@ import {useAuth} from '@/hooks/useAuth';
 
 // Type Imports
 import {Goal} from '@/types/goals';
-import {InfoDialogPropsType} from '@/components/InfoDialog';
+import {
+  InfoDialogPropsType,
+  getErrorDialogProps,
+} from '@/components/InfoDialog';
 
 type TotalStat = {
   steps: number;
@@ -47,10 +53,11 @@ type TotalStat = {
 
 type Props = {
   goal: Goal;
+  refreshGoals: () => void;
   setInfoDialogProps: Dispatch<SetStateAction<InfoDialogPropsType>>;
 };
 
-function GoalCard({goal, setInfoDialogProps}: Props) {
+function GoalCard({goal, refreshGoals, setInfoDialogProps}: Props) {
   const theme = useTheme();
   const {calculator} = useAuth();
   const [statsTotal, setStatsTotal] = useState<TotalStat>(null);
@@ -75,7 +82,18 @@ function GoalCard({goal, setInfoDialogProps}: Props) {
 
   const canEdit = goal?.stepsWalked <= goal?.steps && !goal?.completedAt;
 
-  function deleteGoal() {}
+  async function deleteGoal() {
+    try {
+      await Api.delete(GOALCONTROLL(goal.id));
+      refreshGoals();
+      setInfoDialogProps({
+        open: true,
+        dialogType: 'success',
+      });
+    } catch (error) {
+      setInfoDialogProps(getErrorDialogProps(error));
+    }
+  }
 
   function handleDelete() {
     setInfoDialogProps({

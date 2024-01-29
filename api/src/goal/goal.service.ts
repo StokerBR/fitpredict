@@ -69,13 +69,13 @@ export class GoalService {
 
   /**
    * Deleta uma meta
-   * @param UpdateGoalDto
+   * @param goalId
    * @returns Goal
    */
-  async delete(UpdateGoalDto: UpdateGoalDto) {
+  async delete(goalId: number) {
     try {
       // Verificar se a meta existe
-      const goal = await this.getGoal(UpdateGoalDto.id);
+      const goal = await this.getGoal(goalId);
       if (!goal) {
         throw new HttpException('Meta não encontrada.', HttpStatus.NOT_FOUND);
       }
@@ -83,7 +83,7 @@ export class GoalService {
       // Deletar a meta
       const newGoal = await this.prisma.goal.delete({
         where: {
-          id: UpdateGoalDto.id,
+          id: goalId,
         },
       });
 

@@ -11,6 +11,7 @@ import {
   Request,
   UseGuards,
   Controller,
+  Delete,
 } from '@nestjs/common';
 
 import {
@@ -97,6 +98,42 @@ export class GoalController {
   })
   update(@Request() req: any, @Body() updateGoalDto: UpdateGoalDto) {
     return this.goalService.register(req, updateGoalDto);
+  }
+
+  // Atualizar os dados de uma meta
+  @Delete(':id')
+  @UseGuards(JwtUserAuthGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOkResponse({
+    // Documentação da resposta pro swagger
+    description: 'Dados deletados com sucesso',
+    content: {
+      'application/json': {
+        schema: {
+          example: {
+            message: 'Meta deletada com sucesso.',
+          },
+        },
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({
+    // Documentação da resposta pro swagger
+    description: 'Erro ao deletar meta',
+    content: {
+      'application/json': {
+        schema: {
+          example: {
+            statusCode: 500,
+            message:
+              'Não foi possível deletar a meta. Tente novamente mais tarde.',
+          },
+        },
+      },
+    },
+  })
+  delete(@Param('id') id: number) {
+    return this.goalService.delete(id);
   }
 
   //Obter as metas do usuário logado

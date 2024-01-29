@@ -19,6 +19,7 @@ type Props = DialogProps & {
   toggle: () => void;
   cancelBntText?: string;
   confirmBtnText?: string;
+  refreshOnOpen?: boolean;
   handleConfirm?: () => void;
   handleRefresh?: () => void;
   dialogType: 'success' | 'error' | 'alert' | 'loading';

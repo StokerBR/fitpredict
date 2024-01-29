@@ -26,19 +26,20 @@ function DashboardPage() {
     open: false,
   });
 
-  useEffect(() => {
-    async function getGoalsList() {
-      try {
-        const response = await Api.get<Goal[]>(GOALCONTROLL());
-        if (response?.data?.length > 0) {
-          setGoalsList(response?.data);
-        } else {
-          setGoalsList([]);
-        }
-      } catch (error) {
-        setInfoDialogProps(getErrorDialogProps(error));
+  async function getGoalsList() {
+    try {
+      const response = await Api.get<Goal[]>(GOALCONTROLL());
+      if (response?.data?.length > 0) {
+        setGoalsList(response?.data);
+      } else {
+        setGoalsList([]);
       }
+    } catch (error) {
+      setInfoDialogProps(getErrorDialogProps(error));
     }
+  }
+
+  useEffect(() => {
     getGoalsList();
   }, []);
 
@@ -48,7 +49,11 @@ function DashboardPage() {
         <Grid container spacing={6}>
           {goalsList?.map(goal => (
             <Grid item xs={12} key={goal.id}>
-              <GoalCard goal={goal} setInfoDialogProps={setInfoDialogProps} />
+              <GoalCard
+                goal={goal}
+                refreshGoals={getGoalsList}
+                setInfoDialogProps={setInfoDialogProps}
+              />
             </Grid>
           ))}
         </Grid>
@@ -59,6 +64,7 @@ function DashboardPage() {
         title={infoDialogProps?.title}
         noIcon={infoDialogProps?.noIcon}
         dialogType={infoDialogProps?.dialogType}
+        handleRefresh={infoDialogProps?.handleRefresh}
         handleConfirm={infoDialogProps?.handleConfirm}
         confirmBtnText={infoDialogProps?.confirmBtnText}
         toggle={() =>
