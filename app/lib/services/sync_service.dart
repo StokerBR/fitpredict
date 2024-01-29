@@ -10,18 +10,22 @@ import 'package:fitpredict/widgets/loading.dart';
 import 'package:hive/hive.dart';
 
 class SyncService {
-  static Future<void> sync() async {
+  static Future<void> sync([bool isFirstSync = false]) async {
     isSyncing.value = true;
     openLoading(message: 'Sincronizando dados...');
 
     Map<String, dynamic> payload = {
       'user': User.fromBox()?.toMap(),
-      'goals': Hive.box<Goal>('goals').values.toList().map((goal) {
-        return goal.toMap();
-      }).toList(),
-      'stats': Hive.box<Stat>('stats').values.toList().map((stat) {
-        return stat.toMap();
-      }).toList(),
+      'goals': isFirstSync
+          ? []
+          : Hive.box<Goal>('goals').values.toList().map((goal) {
+              return goal.toMap();
+            }).toList(),
+      'stats': isFirstSync
+          ? []
+          : Hive.box<Stat>('stats').values.toList().map((stat) {
+              return stat.toMap();
+            }).toList(),
     };
 
     try {
@@ -46,7 +50,7 @@ class SyncService {
           // Salvar estatísticas
           for (Map<String, dynamic> stat in data['stats']) {
             Stat statObj = Stat.fromMap(stat);
-            statObj.saveToBox();
+            await statObj.saveToBox();
           }
           currentStat = Stat.getTodayStat();
 
