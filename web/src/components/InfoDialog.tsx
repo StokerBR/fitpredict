@@ -112,32 +112,18 @@ export const InfoDialog = ({
       </DialogContent>
       <DialogActions
         sx={{
+          pb: 5,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
           flexDirection: 'row',
+          justifyContent: 'center',
         }}
       >
         {dialogType === 'loading' && <CircularProgress sx={{mb: 5}} />}
 
-        {!!handleConfirm && (
-          <Button
-            sx={{mr: 5}}
-            variant={'contained'}
-            onClick={
-              !!handleConfirm
-                ? () => {
-                    handleConfirm();
-                    toggle();
-                  }
-                : null
-            }
-          >
-            {confirmBtnText ?? 'Confirmar'}
-          </Button>
-        )}
         {dialogType != 'loading' && (
           <Button
+            sx={{mr: 5}}
             variant={'outlined'}
             color={'secondary'}
             onClick={
@@ -152,6 +138,21 @@ export const InfoDialog = ({
             }
           >
             {cancelBntText ?? (!!handleConfirm ? 'Cancelar' : 'Fechar')}
+          </Button>
+        )}
+        {!!handleConfirm && (
+          <Button
+            variant={'contained'}
+            onClick={
+              !!handleConfirm
+                ? () => {
+                    handleConfirm();
+                    toggle();
+                  }
+                : null
+            }
+          >
+            {confirmBtnText ?? 'Confirmar'}
           </Button>
         )}
       </DialogActions>

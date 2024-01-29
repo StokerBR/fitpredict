@@ -7,3 +7,8 @@ export interface Sync {
   goals: Goal[];
   stats: Stat[];
 }
+
+export type SyncParams = {
+  newUser?: User;
+  newGoals?: Goal[];
+};

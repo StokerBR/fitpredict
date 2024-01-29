@@ -1,7 +1,7 @@
 export interface Goal {
   id: number;
   userId: number;
-  steps: string;
+  steps: number;
   distance: number;
   calories: number;
   lastSync: string;

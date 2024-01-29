@@ -16,7 +16,7 @@ import {USER_GET, USER_REGISTER} from '@/services/endpoints/user';
 import moment from 'moment';
 
 // Types Imports
-import {Sync} from '@/types/sync';
+import {Sync, SyncParams} from '@/types/sync';
 import {Goal} from '@/types/goals';
 import {User, Stat} from '@/types/user';
 import {
@@ -34,6 +34,7 @@ const defaultProviderValues: AuthContextValues = {
   loading: true,
   sync: () => null,
   setUser: () => null,
+  setGoals: () => null,
   isInitialized: false,
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
@@ -88,6 +89,11 @@ function AuthProvider({children}: Props) {
     }
   }, [user]);
 
+  function handleSetGoals(goals: Goal[]) {
+    setGoals(goals);
+    sync({newGoals: goals});
+  }
+
   function clearDataUserStorage() {
     setUser(null);
     setTokens(null);
@@ -100,9 +106,7 @@ function AuthProvider({children}: Props) {
   useEffect(() => {
     if (user?.id) {
       window.localStorage.setItem('userData', JSON.stringify(user));
-      sync();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   async function login(
@@ -150,17 +154,17 @@ function AuthProvider({children}: Props) {
     }
   }
 
-  async function sync() {
+  async function sync({newUser, newGoals}: SyncParams) {
     if (user?.id) {
       try {
         const params = {
-          user: user,
+          user: newUser || user,
           stats: stats || [],
-          goals: goals || [],
+          goals: newGoals?.length ? newGoals : goals || [],
         };
         const response = await Api.post<Sync>(SYNC, params);
         setStats(response.data.stats);
-        setGoals(response.data.goals);
+        setGoals(response.data.goals.sort((a, b) => b.id - a.id));
       } catch (error) {
         throw error;
       }
@@ -177,6 +181,7 @@ function AuthProvider({children}: Props) {
     setLoading,
     isInitialized,
     setIsInitialized,
+    setGoals: handleSetGoals,
     login,
     logout,
     register,
