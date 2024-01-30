@@ -1,4 +1,4 @@
-import { UpdateGoalDto } from './dto/update-goal.dto';
+import { GoalDto } from './dto/goal.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterGoalDto } from './dto/register-goal.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -37,22 +37,25 @@ export class GoalService {
   /**
    * Atualiza os dados de uma meta
    * @param req
-   * @param UpdateGoalDto
+   * @param GoalDto
+   * @param goalId
    * @returns Goal
    */
-  async update(req: any, UpdateGoalDto: UpdateGoalDto) {
+  async update(req: any, goalDto: GoalDto, goalId: number) {
     try {
       // Verificar se a meta existe
-      const goal = await this.getGoal(UpdateGoalDto.id);
+      const goal = await this.getGoal(goalId);
       if (!goal) {
         throw new HttpException('Meta não encontrada.', HttpStatus.NOT_FOUND);
       }
 
       // Cadastrar a meta
-      const newGoal = await this.prisma.goal.create({
+      const newGoal = await this.prisma.goal.update({
         data: {
-          ...UpdateGoalDto,
-          userId: req.user.id,
+          ...goalDto,
+        },
+        where: {
+          id: goalId,
         },
       });
 

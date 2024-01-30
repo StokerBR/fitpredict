@@ -54,10 +54,16 @@ type TotalStat = {
 type Props = {
   goal: Goal;
   refreshGoals: () => void;
+  openEditGoalDrawer: (goalId: number) => void;
   setInfoDialogProps: Dispatch<SetStateAction<InfoDialogPropsType>>;
 };
 
-function GoalCard({goal, refreshGoals, setInfoDialogProps}: Props) {
+function GoalCard({
+  goal,
+  refreshGoals,
+  openEditGoalDrawer,
+  setInfoDialogProps,
+}: Props) {
   const theme = useTheme();
   const {calculator} = useAuth();
   const [statsTotal, setStatsTotal] = useState<TotalStat>(null);
@@ -212,7 +218,7 @@ function GoalCard({goal, refreshGoals, setInfoDialogProps}: Props) {
           >
             {canEdit && (
               <Tooltip title={'Editar meta'} placement={'top'}>
-                <IconButton onClick={() => console.log('teste')}>
+                <IconButton onClick={() => openEditGoalDrawer(goal.id)}>
                   <EditIcon sx={{color: 'primary.light'}} />
                 </IconButton>
               </Tooltip>

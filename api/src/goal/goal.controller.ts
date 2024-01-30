@@ -1,5 +1,5 @@
+import { GoalDto } from './dto/goal.dto';
 import { GoalService } from './goal.service';
-import { UpdateGoalDto } from './dto/update-goal.dto';
 import { RegisterGoalDto } from './dto/register-goal.dto';
 import { JwtUserAuthGuard } from '../auth/guards/jwt-auth.guard';
 import {
@@ -65,7 +65,7 @@ export class GoalController {
   }
 
   // Atualizar os dados de uma meta
-  @Put('')
+  @Put(':id')
   @UseGuards(JwtUserAuthGuard)
   @ApiBearerAuth('access-token')
   @ApiOkResponse({
@@ -96,11 +96,15 @@ export class GoalController {
       },
     },
   })
-  update(@Request() req: any, @Body() updateGoalDto: UpdateGoalDto) {
-    return this.goalService.register(req, updateGoalDto);
+  update(
+    @Request() req: any,
+    @Body() goalDto: GoalDto,
+    @Param('id') id: number,
+  ) {
+    return this.goalService.update(req, goalDto, id);
   }
 
-  // Atualizar os dados de uma meta
+  // Deleta uma meta
   @Delete(':id')
   @UseGuards(JwtUserAuthGuard)
   @ApiBearerAuth('access-token')

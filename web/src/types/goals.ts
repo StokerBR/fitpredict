@@ -1,11 +1,11 @@
 export interface Goal {
-  id: number;
-  userId: number;
+  id?: number;
+  userId?: number;
   steps: number;
   distance: number;
   calories: number;
-  lastSync: string;
-  completedAt: string;
+  lastSync?: string;
+  completedAt?: string;
   stepsWalked: number;
 }
 

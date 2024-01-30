@@ -14,6 +14,7 @@ type FloatingButtonProps = {
   children: ReactNode;
   color?: ThemeColor | 'default';
   size?: 'small' | 'medium' | 'large';
+  onClick: () => void;
 };
 
 function FloatingButton({
@@ -22,6 +23,7 @@ function FloatingButton({
   color,
   top,
   bottom,
+  onClick,
 }: FloatingButtonProps) {
   const FloatingButtonStyled = styled('div')(({theme}) => ({
     zIndex: 11,
@@ -33,6 +35,7 @@ function FloatingButton({
   }));
   return (
     <FloatingButtonStyled
+      onClick={onClick}
       role="presentation"
       color={color || 'primary'}
       sx={{borderRadius: '50%'}}

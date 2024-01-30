@@ -16,6 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 // Custom Components Imports
 import GoalCard from '@/views/goals/GoalCard';
 import {InfoDialog} from '@/components/InfoDialog';
+import FormGoalDrawer from '@/views/goals/FormGoalDrawer';
 import FloatingButton from '@/components/floating-button';
 
 // Type Imports
@@ -26,7 +27,9 @@ import {InfoDialogPropsType} from '@/components/InfoDialog';
 import {getErrorDialogProps} from '@/components/InfoDialog';
 
 function DashboardPage() {
+  const [goalId, setGoalId] = useState<number>();
   const [goalsList, setGoalsList] = useState<Goal[]>([]);
+  const [showFormGoalDrawer, setShowFormGoalDrawer] = useState<boolean>(false);
   const [infoDialogProps, setInfoDialogProps] = useState<InfoDialogPropsType>({
     open: false,
   });
@@ -48,6 +51,11 @@ function DashboardPage() {
     getGoalsList();
   }, []);
 
+  function handleEditGoal(goalId: number) {
+    setGoalId(goalId);
+    setShowFormGoalDrawer(true);
+  }
+
   return (
     <Grid container spacing={6} sx={{justifyContent: 'center'}}>
       <Grid item xs={12} sm={9} md={6} lg={4.5} xl={4}>
@@ -57,6 +65,7 @@ function DashboardPage() {
               <GoalCard
                 goal={goal}
                 refreshGoals={getGoalsList}
+                openEditGoalDrawer={handleEditGoal}
                 setInfoDialogProps={setInfoDialogProps}
               />
             </Grid>
@@ -79,7 +88,14 @@ function DashboardPage() {
           }))
         }
       />
-      <FloatingButton>
+      <FormGoalDrawer
+        goalId={goalId}
+        open={showFormGoalDrawer}
+        refreshGoals={getGoalsList}
+        setInfoDialogProps={setInfoDialogProps}
+        toggle={() => setShowFormGoalDrawer(prevState => !prevState)}
+      />
+      <FloatingButton onClick={() => setShowFormGoalDrawer(true)}>
         <Tooltip title="Criar meta" placement="left">
           <AddIcon />
         </Tooltip>
