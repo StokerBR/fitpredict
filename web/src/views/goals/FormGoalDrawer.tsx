@@ -35,7 +35,6 @@ import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 
 // Type Imports
 import {Goal} from '@/types/goals';
-import {FieldErrors} from 'react-hook-form';
 import {InfoDialogPropsType} from '@/components/InfoDialog';
 
 // Hooks Imports
@@ -76,17 +75,6 @@ function getInputLabel(goalType: GoalType) {
       return 'Calorias (kcal)*';
     case 'distance':
       return 'Distância (m)*';
-  }
-}
-
-function getInputError(goalType: GoalType, goal: Goal) {
-  switch (goalType) {
-    case 'steps':
-      return !goal?.steps;
-    case 'calories':
-      return !goal?.calories;
-    case 'distance':
-      return !goal?.distance;
   }
 }
 

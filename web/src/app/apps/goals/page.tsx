@@ -93,7 +93,10 @@ function DashboardPage() {
         open={showFormGoalDrawer}
         refreshGoals={getGoalsList}
         setInfoDialogProps={setInfoDialogProps}
-        toggle={() => setShowFormGoalDrawer(prevState => !prevState)}
+        toggle={() => {
+          setShowFormGoalDrawer(prevState => !prevState);
+          setGoalId(undefined);
+        }}
       />
       <FloatingButton onClick={() => setShowFormGoalDrawer(true)}>
         <Tooltip title="Criar meta" placement="left">
