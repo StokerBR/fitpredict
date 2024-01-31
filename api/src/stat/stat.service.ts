@@ -38,7 +38,9 @@ export class StatService {
    */
   async getTodayStat(req: any) {
     try {
-      const todayDate = new Date(moment().format('YYYY-MM-DD'));
+      const todayDate = new Date(
+        moment().utcOffset(3, true).format('YYYY-MM-DD'),
+      );
       // Buscar as metas
       const todayStat = (
         await this.prisma.stat.findMany({
