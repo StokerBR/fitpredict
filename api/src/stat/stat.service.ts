@@ -39,7 +39,7 @@ export class StatService {
   async getTodayStat(req: any) {
     try {
       const todayDate = new Date(
-        moment().utc(!moment().isUTC()).format('YYYY-MM-DD'),
+        moment().subtract(3, 'hours').format('YYYY-MM-DD'),
       );
       // Buscar as metas
       const todayStat = (
